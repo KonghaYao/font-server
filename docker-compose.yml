@@ -1,0 +1,7 @@
+version: "3"
+services:
+  # 前端服务
+  frontend:
+    build: ./api
+    ports:
+      - "80:3000"
