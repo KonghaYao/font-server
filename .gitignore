@@ -18,6 +18,7 @@
 /xmlrpc.php
 node_modules
 dist
+data
 
 # Configuration
 wp-config.php

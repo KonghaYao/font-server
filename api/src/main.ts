@@ -7,7 +7,7 @@ import { FontsRouter } from "./routers/fonts";
 import { initMinio } from "./oss";
 const app = new Koa();
 const router = new Router();
-await initMinio();
+
 router.use(FontsRouter.routes());
 // // 主要逻辑 遵循 restful api
 
@@ -104,6 +104,9 @@ app.use(
     .use(router.routes())
     .use(router.allowedMethods());
 
-app.listen(3000, () => {
-    console.log("服务启动了");
-});
+(async () => {
+    await initMinio();
+    app.listen(3000, () => {
+        console.log("服务启动了");
+    });
+})();
