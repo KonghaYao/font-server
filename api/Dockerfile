@@ -1,3 +1,6 @@
 FROM denoland/deno:1.33.2
 COPY . .
-CMD ["deno","run" ,"--allow-all", "main.ts"]
+RUN npm install
+RUN tsc
+RUN npm build
+CMD ["node","./dist/main.js" ]

@@ -1,16 +1,15 @@
-import {DataSource} from "https://esm.sh/typeorm@0.3.16";
-
+import { DataSource } from "typeorm";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
     host: "localhost",
     port: 5432,
-    username: Deno.env.get('DB_USERNAME'),
-    password: Deno.env.get('DB_PASSWORD'),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
     database: "test",
     synchronize: true,
     logging: true,
     entities: [],
     subscribers: [],
     migrations: [],
-})
+});
