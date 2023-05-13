@@ -1,6 +1,9 @@
 version: "3"
 services:
     api:
+        depends_on:
+            - minio
+            - db
         build: ./api
         environment:
             - DB_USERNAME=postgres
