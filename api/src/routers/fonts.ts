@@ -1,6 +1,6 @@
 import Router from "@koa/router";
 
-import { minioClient } from "../oss";
+import { minioClient } from "../oss/index.js";
 const FontsRouter = new Router();
 
 FontsRouter.post("/fonts", async (ctx) => {

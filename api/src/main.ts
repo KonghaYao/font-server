@@ -3,8 +3,8 @@ import Router from "@koa/router";
 import koaBody from "koa-body";
 import cors from "@koa/cors";
 import logger from "koa-logger";
-import { FontsRouter } from "./routers/fonts";
-import { initMinio } from "./oss";
+import { FontsRouter } from "./routers/fonts.js";
+import { initMinio } from "./oss/index.js";
 const app = new Koa();
 const router = new Router();
 
