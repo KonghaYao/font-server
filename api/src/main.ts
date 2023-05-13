@@ -4,8 +4,10 @@ import koaBody from "koa-body";
 import cors from "@koa/cors";
 import logger from "koa-logger";
 import { FontsRouter } from "./routers/fonts";
+import { initMinio } from "./oss";
 const app = new Koa();
 const router = new Router();
+await initMinio();
 router.use(FontsRouter.routes());
 // // 主要逻辑 遵循 restful api
 
@@ -93,6 +95,10 @@ app.use(
     .use(
         koaBody({
             multipart: true,
+            formidable: {
+                maxFieldsSize: 20 * 1024 * 1024,
+                keepExtensions: true,
+            },
         })
     )
     .use(router.routes())
