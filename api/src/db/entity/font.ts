@@ -6,6 +6,7 @@ import {
     ManyToOne,
     JoinColumn,
     OneToMany,
+    Unique,
 } from "typeorm";
 import { Record } from "./record.js";
 
@@ -20,6 +21,7 @@ export class FontSource extends Record {
     name!: string;
 
     @Column()
+    @Unique("user_fonts_unique", ["md5"])
     md5!: string;
 
     // 一个字体包含多个切割版本
@@ -34,7 +36,6 @@ export class FontSource extends Record {
 /** 切割字体的存储 */
 @Entity()
 export class FontSplit extends Record {
-    
     @ManyToOne(() => FontSource, (source) => source.versions)
     @JoinColumn({ name: "user_id" })
     source!: FontSource;
