@@ -8,6 +8,8 @@ import { createTempPath } from "../useTemp.js";
 import fs from "fs/promises";
 const SplitRouter = new Router();
 
+/** node 某一个版本新加的 api 导致库的环境判断失误，会BUG */
+(globalThis as any).fetch = null;
 /** 切割字体 */
 SplitRouter.post("/split", async (ctx) => {
     const { id, md5 } = ctx.request.body;
@@ -40,8 +42,7 @@ SplitRouter.post("/split", async (ctx) => {
         await fontSplit({
             FontPath: tempFilePath,
             destFold: destFilePath,
-            // TODO woff2 运行在这个里面就 BUG 了
-            targetType: "ttf",
+            targetType: "woff2",
             chunkSize: 70 * 1024,
             testHTML: false,
             previewImage: {},
