@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import { FontSource, FontSplit } from "./entity/font.js";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -9,7 +10,7 @@ export const AppDataSource = new DataSource({
     database: "test",
     synchronize: true,
     logging: true,
-    entities: [],
+    entities: [FontSource, FontSplit],
     subscribers: [],
     migrations: [],
 });
