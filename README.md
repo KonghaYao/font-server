@@ -32,7 +32,7 @@ font-server 为内网使用的 **字体存储、管理服务**。功能描述如
 2. 下载测试文件（可跳过）
 
 ```bash
-sh scripts/downloadFonts.sh # 需要 linux 环境 curl unzip
+sudo sh scripts/downloadFonts.sh # 需要 linux 环境 curl unzip
 ```
 
 2. 在根目录运行
