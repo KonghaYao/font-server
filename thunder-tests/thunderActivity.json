@@ -31,7 +31,7 @@
     "_id": "fc22bd65-9c9d-4ec9-89bb-6eedfa63df7d",
     "colId": "history",
     "containerId": "",
-    "name": "http://localhost:3000/fonts",
+    "name": "用户上传字体",
     "url": "http://localhost:3000/fonts",
     "method": "POST",
     "sortNum": 0,

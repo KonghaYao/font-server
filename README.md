@@ -27,7 +27,13 @@ font-server 为内网使用的 **字体存储、管理服务**。功能描述如
 
 # 快速测试
 
-1. fork 它并打开 Github Workspace
+1. **clone 本仓库** OR **fork 它并打开 Github Workspace**
+
+2. 下载测试文件（可跳过）
+
+```bash
+sh scripts/downloadFonts.sh
+```
 
 2. 在根目录运行
 

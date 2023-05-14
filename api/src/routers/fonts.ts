@@ -21,13 +21,14 @@ FontsRouter.post("/fonts", async (ctx) => {
 
     const source_path = "user-fonts/" + name;
     // update to database
-    FontSource.create({
+    const source = FontSource.create({
         path: source_path,
-        md5:file.hash,
-        versions:[],
-        isSplit:false,
-        name:ctx.reuqest.body.name??path.basename(file.originalFilename!)
+        md5: file.hash!,
+        versions: [] as any[],
+        isSplit: false,
+        name: ctx.reuqest.body.name ?? path.basename(file.originalFilename!),
     });
+    await AppDataSource.getRepository(FontSource).save(source);
 
     ctx.body = JSON.stringify({
         data: { ...cb, path: source_path },
