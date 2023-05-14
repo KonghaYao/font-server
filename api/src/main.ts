@@ -3,11 +3,12 @@ import Router from "@koa/router";
 import { koaBody } from "koa-body";
 import logger from "koa-logger";
 import { FontsRouter } from "./routers/fonts.js";
+import { SplitRouter } from "./routers/split.js";
 import { initMinio } from "./oss/index.js";
 const app = new Koa();
 const router = new Router();
 
-router.use(FontsRouter.routes());
+router.use(FontsRouter.routes()).use(SplitRouter.routes());
 
 // 一些中间件
 app.use(

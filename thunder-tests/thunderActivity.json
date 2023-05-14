@@ -52,7 +52,7 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2023-05-13T03:49:21.654Z",
-    "modified": "2023-05-14T01:40:11.976Z",
+    "modified": "2023-05-14T12:28:11.539Z",
     "headers": [],
     "params": [],
     "body": {
@@ -67,7 +67,35 @@
       "files": [
         {
           "name": "font",
-          "value": "../data/fonts/SubsetOTF/CN/SourceHanSerifCN-Light.otf"
+          "value": "../data/fonts/SmileySans-Oblique.ttf"
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "1d33903a-6d3c-48e9-a026-a2fc4bd96fab",
+    "colId": "history",
+    "containerId": "",
+    "name": "打包字体",
+    "url": "http://localhost:3000/split",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-05-14T12:54:13.868Z",
+    "modified": "2023-05-14T12:54:13.868Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "md5",
+          "value": "09b02d77d567a54c42bc6620810304bc"
+        },
+        {
+          "name": "id",
+          "value": "4"
         }
       ]
     },
