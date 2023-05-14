@@ -36,7 +36,7 @@
     "method": "POST",
     "sortNum": 0,
     "created": "2023-05-13T03:49:21.654Z",
-    "modified": "2023-05-13T03:49:21.654Z",
+    "modified": "2023-05-14T01:40:11.976Z",
     "headers": [],
     "params": [],
     "body": {
@@ -44,15 +44,14 @@
       "raw": "",
       "form": [
         {
-          "name": "font",
-          "value": "",
-          "isDisabled": true
+          "name": "name",
+          "value": "测试文件"
         }
       ],
       "files": [
         {
           "name": "font",
-          "value": "..\\api\\routers\\fonts.ts"
+          "value": "../data/fonts/SubsetOTF/CN/SourceHanSerifCN-Light.otf"
         }
       ]
     },

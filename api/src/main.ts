@@ -1,7 +1,6 @@
 import Koa from "koa";
 import Router from "@koa/router";
 import { koaBody } from "koa-body";
-import cors from "@koa/cors";
 import logger from "koa-logger";
 import { FontsRouter } from "./routers/fonts.js";
 import { initMinio } from "./oss/index.js";
@@ -87,13 +86,10 @@ app.use(
     }
 )
     .use(logger())
-    .use(
-        cors({
-            origin: "*",
-        })
-    )
+
     .use(
         koaBody({
+            json: true,
             multipart: true,
             formidable: {
                 maxFieldsSize: 20 * 1024 * 1024,
