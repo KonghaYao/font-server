@@ -5,7 +5,7 @@
     "main": "dist/main.js",
     "type": "module",
     "scripts": {
-        "dev": "node dist/main.js",
+        "dev": "DB_USERNAME=postgres DB_PASSWORD=postgres MINIO_POINT=localhost MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin node dist/main.js",
         "build": "tsc"
     },
     "author": "",
@@ -13,6 +13,7 @@
     "dependencies": {
         "@koa/cors": "^4.0.0",
         "@koa/router": "^12.0.0",
+        "@konghayao/cn-font-split": "^3.1.3",
         "koa": "^2.14.2",
         "koa-body": "^6.0.1",
         "koa-logger": "^3.2.1",

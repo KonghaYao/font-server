@@ -1,7 +1,7 @@
-import { createConnection } from "typeorm";
+import { DataSource } from "typeorm";
 import { FontSource, FontSplit } from "./entity/font.js";
 
-export const AppDataSource = await createConnection({
+export const AppDataSource = await new DataSource({
     type: "postgres",
     host: "localhost",
     port: 5432,
@@ -13,4 +13,6 @@ export const AppDataSource = await createConnection({
     entities: [FontSource, FontSplit],
     subscribers: [],
     migrations: [],
-});
+}).initialize();
+export const FontSourceRepo = AppDataSource.getRepository(FontSource);
+export const FontSplitRepo = AppDataSource.getRepository(FontSplit);

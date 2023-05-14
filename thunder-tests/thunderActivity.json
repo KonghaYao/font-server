@@ -3,12 +3,12 @@
     "_id": "49d23b8f-02da-425f-952d-466c10093fbd",
     "colId": "history",
     "containerId": "",
-    "name": "http://localhost:3000/font 获取字体列表",
-    "url": "http://localhost:3000/font",
+    "name": "单个用户字体",
+    "url": "http://localhost:3000/fonts/1",
     "method": "GET",
     "sortNum": 0,
     "created": "2023-05-12T11:42:10.464Z",
-    "modified": "2023-05-12T11:42:10.464Z",
+    "modified": "2023-05-14T07:35:21.223Z",
     "headers": [],
     "params": [],
     "tests": []
@@ -17,14 +17,30 @@
     "_id": "4cf32814-64f6-45df-81ea-818c12fe8b25",
     "colId": "history",
     "containerId": "",
-    "name": "http://localhost:3000/font/bwckkt/白无常可可体-Regular 获取字体详情",
-    "url": "http://localhost:3000/font/bwckkt/白无常可可体-Regular",
+    "name": "用户字体列表",
+    "url": "http://localhost:3000/fonts?limit=5&offset=0&q=空",
     "method": "GET",
     "sortNum": 0,
     "created": "2023-05-12T11:43:16.499Z",
-    "modified": "2023-05-12T11:43:16.499Z",
+    "modified": "2023-05-14T07:45:57.575Z",
     "headers": [],
-    "params": [],
+    "params": [
+      {
+        "name": "limit",
+        "value": "5",
+        "isPath": false
+      },
+      {
+        "name": "offset",
+        "value": "0",
+        "isPath": false
+      },
+      {
+        "name": "q",
+        "value": "空",
+        "isPath": false
+      }
+    ],
     "tests": []
   },
   {

@@ -1,9 +1,29 @@
 import Router from "@koa/router";
 import path from "path";
 import { minioClient } from "../oss/index.js";
-import { AppDataSource } from "../db/db.js";
-import { FontSource } from "../db/entity/font.js";
+import { FontSource, FontSplit } from "../db/entity/font.js";
+import { FontSourceRepo } from "../db/db.js";
 const FontsRouter = new Router();
+
+/** 获取用户字体列表 */
+FontsRouter.get("/fonts", async (ctx) => {
+    const { limit, offset, q } = ctx.query;
+    let query = FontSourceRepo.createQueryBuilder("*")
+        .orderBy("id", "DESC")
+        .limit(parseInt(limit as string))
+        .offset(parseInt(offset as string));
+    if (q) query = query.where(`name LIKE '%' || :q || '%'`, { q });
+
+    const res = await query.getMany();
+    ctx.body = JSON.stringify(res);
+});
+
+FontsRouter.get("/fonts/:id", async (ctx) => {
+    const { id } = ctx.params;
+    let query = await FontSourceRepo.findOneBy({ id: parseInt(id as string) });
+
+    ctx.body = JSON.stringify(query);
+});
 
 /** 用户上传字体 */
 FontsRouter.post("/fonts", async (ctx) => {
@@ -25,12 +45,11 @@ FontsRouter.post("/fonts", async (ctx) => {
     const source = FontSource.create({
         path: source_path,
         md5: file.hash!,
-        versions: [] as any[],
-        isSplit: false,
+        versions: [] as FontSplit[],
         name: ctx.request.body.name ?? path.basename(file.originalFilename!),
     });
-    const repo = await AppDataSource.getRepository(FontSource);
-    const res = await repo.save(source);
+
+    const res = await FontSourceRepo.save(source);
 
     ctx.body = JSON.stringify({
         data: { data: res, ...cb, path: source_path },
