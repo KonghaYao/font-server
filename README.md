@@ -32,14 +32,14 @@ font-server 为内网使用的 **字体存储、管理服务**。功能描述如
 2. 下载测试文件（可跳过）
 
 ```bash
-sh scripts/downloadFonts.sh
+sh scripts/downloadFonts.sh # 需要 linux 环境 curl unzip
 ```
 
 2. 在根目录运行
 
 ```sh
-docker-compose up
+docker-compose up -d
 ```
 
 3. VSCode 安装 Thunder Client
-4. Thunder Client 可以看到仓库的各个请求情况
+4. VSCode 设置中打上 Thunder Client 的 save to workspace 勾，然后重启就可以看到我之前的请求测试
