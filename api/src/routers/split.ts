@@ -2,16 +2,18 @@ import Router from "@koa/router";
 import path from "path";
 import { minioClient } from "../oss/index.js";
 import { FontSourceRepo, FontSplitRepo } from "../db/db.js";
-import { FontSplit, SplitEnum } from "../db/entity/font.js";
+import { FontSource, FontSplit, SplitEnum } from "../db/entity/font.js";
 import { fontSplit } from "@konghayao/cn-font-split";
 import { createTempPath } from "../useTemp.js";
 import fs from "fs/promises";
 const SplitRouter = new Router();
 
-/** node 某一个版本新加的 api 导致库的环境判断失误，会BUG */
+/* ! node 某一个版本新加的 api 导致库的环境判断失误，会BUG */
 (globalThis as any).fetch = null;
+
 /** 切割字体 */
 SplitRouter.post("/split", async (ctx) => {
+    // TODO 改用 SSE 返回数据
     const { id, md5 } = ctx.request.body;
     const item = await FontSourceRepo.findOneBy({ id: parseInt(id as string) });
     if (item && md5 === item.md5) {
@@ -38,6 +40,9 @@ SplitRouter.post("/split", async (ctx) => {
             path.basename(item.path),
             tempFilePath
         );
+
+        newFontSplit.state = SplitEnum.cutting;
+        await FontSourceRepo.save(newFontSplit);
 
         await fontSplit({
             FontPath: tempFilePath,
@@ -70,6 +75,26 @@ SplitRouter.post("/split", async (ctx) => {
     } else {
         throw new Error(`font id: ${id} and md5: ${md5} not found! `);
     }
+});
+
+SplitRouter.get("/split", async (ctx) => {
+    const { limit, offset, state, source } = ctx.query;
+
+    const res = await FontSplit.find({
+        skip: parseInt(offset as string),
+        take: parseInt(limit as string),
+        where: {
+            state: state ? parseInt(state as string) : undefined,
+            source: {
+                id: source ? parseInt(source as string) : undefined,
+            },
+        },
+        order: {
+            id: "DESC",
+        },
+        relations: ["source"],
+    });
+    ctx.body = JSON.stringify(res);
 });
 
 export { SplitRouter };

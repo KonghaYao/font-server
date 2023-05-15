@@ -3,20 +3,25 @@ import path from "path";
 import { minioClient } from "../oss/index.js";
 import { FontSource, FontSplit } from "../db/entity/font.js";
 import { FontSourceRepo } from "../db/db.js";
-
+import { Like } from "typeorm";
 
 const FontsRouter = new Router();
 
 /** 获取用户字体列表 */
 FontsRouter.get("/fonts", async (ctx) => {
-    const { limit, offset, q } = ctx.query;
-    let query = FontSourceRepo.createQueryBuilder("*")
-        .orderBy("id", "DESC")
-        .limit(parseInt(limit as string))
-        .offset(parseInt(offset as string));
-    if (q) query = query.where(`name LIKE '%' || :q || '%'`, { q });
+    const { limit, offset, q, versions } = ctx.query;
+    const res = await FontSourceRepo.find({
+        skip: parseInt(offset as string),
+        take: parseInt(limit as string),
+        where: {
+            name: Like(`%${q}%`),
+        },
+        order: {
+            id: "DESC",
+        },
+        relations: [versions && "versions"].filter((i) => i) as string[],
+    });
 
-    const res = await query.getMany();
     ctx.body = JSON.stringify(res);
 });
 
