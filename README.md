@@ -15,13 +15,14 @@ font-server 为内网使用的 **字体存储、管理服务**。功能描述如
 1. API Server
     1. 采用 Nodejs Typescript Koa 框架构建 Restful API 提供给系统外部使用
     2. 字体切割服务，暂时采用同一个服务器进行服务
+    3. 通过 Web Hook 通知外部更新
 2. 数据库：
     1. 使用 Docker 容器中的 Postgres，不直接进行操作
     2. 通过 Nodejs TypeORM 框架存储一些基本数据即可
 3. MINIO 文件系统：
-    1. 备份用户字体
-    2. 存储切割字体分片
-    3. 通过 Web Hook 通知 外部更新
+    1. 使用 SDK 操作 MINIO 容器
+    2. 备份用户字体
+    3. 存储切割字体分片
 
 # 快速测试
 

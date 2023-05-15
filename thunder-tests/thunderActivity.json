@@ -141,5 +141,58 @@
       }
     ],
     "tests": []
+  },
+  {
+    "_id": "6cfcc246-7184-4aa4-8f2b-c76aa374939c",
+    "colId": "history",
+    "containerId": "",
+    "name": "添加 webHook 订阅",
+    "url": "http://localhost:3000/webhook",
+    "method": "POST",
+    "sortNum": 0,
+    "created": "2023-05-15T10:05:06.079Z",
+    "modified": "2023-05-15T10:05:06.079Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"url\":\"http://localhost:8888\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "09d6847d-45ce-410a-83b4-9827b93dd92e",
+    "colId": "history",
+    "containerId": "",
+    "name": "删除webHook 订阅 ",
+    "url": "http://localhost:3000/webhook?id=2",
+    "method": "DELETE",
+    "sortNum": 0,
+    "created": "2023-05-15T10:05:06.079Z",
+    "modified": "2023-05-15T10:13:09.350Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "id",
+        "value": "2",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "743efaac-2b4a-49fe-9311-5dcb1d463d95",
+    "colId": "history",
+    "containerId": "",
+    "name": "测试 webHook 订阅",
+    "url": "http://localhost:3000/webhook",
+    "method": "PATCH",
+    "sortNum": 0,
+    "created": "2023-05-15T10:05:06.079Z",
+    "modified": "2023-05-15T10:17:32.514Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]

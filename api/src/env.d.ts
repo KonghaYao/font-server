@@ -1,4 +1,8 @@
-declare module "@konghayao/cn-font-split" {
-    const fontSplit: any;
-    export { fontSplit };
+// 声明全局变量
+declare global {
+    namespace NodeJS {
+        interface Global {
+            _fetch: typeof globalThis.fetch;
+        }
+    }
 }

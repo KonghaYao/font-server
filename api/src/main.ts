@@ -5,10 +5,14 @@ import logger from "koa-logger";
 import { FontsRouter } from "./routers/fonts.js";
 import { SplitRouter } from "./routers/split.js";
 import { initMinio } from "./oss/index.js";
+import { WebHookRouter } from "./routers/webhook.js";
 const app = new Koa();
 const router = new Router();
 
-router.use(FontsRouter.routes()).use(SplitRouter.routes());
+router
+    .use(FontsRouter.routes())
+    .use(SplitRouter.routes())
+    .use(WebHookRouter.routes());
 
 // 一些中间件
 app.use(

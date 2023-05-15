@@ -20,6 +20,7 @@ export const webhook = (): Middleware => {
     return async (ctx, next) => {
         await next();
         if (!ctx.response.webhook) return;
+        const hookMessage = ctx.response.webhook;
         // 副作用，不用考虑等待问题
         WebHookRepo.find().then((hooks) => {
             hooks.forEach(async (i) => {
@@ -27,21 +28,21 @@ export const webhook = (): Middleware => {
                     source: i,
                     state: WebHookCBState.pending,
                     message: "",
-                    event: ctx.response.webhook!.event,
+                    event: hookMessage!.event,
                 });
                 await log.save();
-                return new Promise((res) => {
-                    return global
-                        .fetch(i.url, {
-                            method: "post",
-                            headers: {
-                                "content-type": "application/json",
-                                "x-font-server": "",
-                            },
-                            body: JSON.stringify(ctx.response.webhook),
-                        })
-                        .then((res) => res.json());
+
+                const fetch: (typeof globalThis)["fetch"] = (globalThis as any)
+                    ._fetch;
+                return fetch(i.url, {
+                    method: "post",
+                    headers: {
+                        "content-type": "application/json",
+                        "x-font-server": "",
+                    },
+                    body: JSON.stringify(hookMessage),
                 })
+                    .then((res) => res.json())
                     .then((res: any) => {
                         log.message = res.message;
                         log.state = WebHookCBState.success;

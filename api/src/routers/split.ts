@@ -11,6 +11,7 @@ import { WebHookEvent } from "../db/entity/webhook.js";
 const SplitRouter = new Router();
 
 /* ! node 某一个版本新加的 api 导致库的环境判断失误，会BUG */
+(globalThis as any)._fetch = globalThis.fetch;
 (globalThis as any).fetch = null;
 
 /** 切割字体 */
