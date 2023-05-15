@@ -17,3 +17,4 @@ export const AppDataSource = await new DataSource({
 }).initialize();
 export const FontSourceRepo = AppDataSource.getRepository(FontSource);
 export const FontSplitRepo = AppDataSource.getRepository(FontSplit);
+export const WebHookRepo = AppDataSource.getRepository(WebHook);

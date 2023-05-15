@@ -4,6 +4,8 @@ import { minioClient } from "../oss/index.js";
 import { FontSource, FontSplit } from "../db/entity/font.js";
 import { FontSourceRepo } from "../db/db.js";
 import { Like } from "typeorm";
+import { webhook } from "../middleware/webhook.js";
+import { WebHookEvent } from "../db/entity/webhook.js";
 
 const FontsRouter = new Router();
 
@@ -33,7 +35,7 @@ FontsRouter.get("/fonts/:id", async (ctx) => {
 });
 
 /** 用户上传字体 */
-FontsRouter.post("/fonts", async (ctx) => {
+FontsRouter.post("/fonts", webhook(), async (ctx) => {
     // 检查输入
     const file = ctx.request.files!.font;
     if (file instanceof Array) {
@@ -57,9 +59,14 @@ FontsRouter.post("/fonts", async (ctx) => {
     });
 
     const res = await FontSourceRepo.save(source);
+    const data = { data: res, ...cb, path: source_path };
+    ctx.response.webhook = {
+        event: WebHookEvent.UPLOAD_SUCCESS,
+        payload: data,
+    };
 
     ctx.body = JSON.stringify({
-        data: { data: res, ...cb, path: source_path },
+        data,
     });
 });
 

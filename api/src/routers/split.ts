@@ -6,13 +6,15 @@ import { FontSource, FontSplit, SplitEnum } from "../db/entity/font.js";
 import { fontSplit } from "@konghayao/cn-font-split";
 import { createTempPath } from "../useTemp.js";
 import fs from "fs/promises";
+import { webhook } from "../middleware/webhook.js";
+import { WebHookEvent } from "../db/entity/webhook.js";
 const SplitRouter = new Router();
 
 /* ! node 某一个版本新加的 api 导致库的环境判断失误，会BUG */
 (globalThis as any).fetch = null;
 
 /** 切割字体 */
-SplitRouter.post("/split", async (ctx) => {
+SplitRouter.post("/split", webhook(), async (ctx) => {
     // TODO 改用 SSE 返回数据
     const { id, md5 } = ctx.request.body;
     const item = await FontSourceRepo.findOneBy({ id: parseInt(id as string) });
@@ -72,6 +74,12 @@ SplitRouter.post("/split", async (ctx) => {
         await FontSplitRepo.save(newFontSplit);
 
         ctx.body = JSON.stringify(newFontSplit);
+
+        // 发布 webhook
+        ctx.response.webhook = {
+            event: WebHookEvent.SPLIT_SUCCESS,
+            payload: newFontSplit,
+        };
     } else {
         throw new Error(`font id: ${id} and md5: ${md5} not found! `);
     }

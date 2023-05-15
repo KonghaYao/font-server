@@ -14,6 +14,13 @@ export enum WebHookCBState {
     success = 1,
     error = 2,
 }
+export enum WebHookEvent {
+    NULL = 0,
+    /** 切割字体完成 */
+    SPLIT_SUCCESS = 1,
+    /** 用户上传字体成功 */
+    UPLOAD_SUCCESS = 2,
+}
 
 /** WebHook 触发事件的存储 */
 @Entity()
@@ -26,6 +33,12 @@ export class WebHookLog extends Record {
         default: WebHookCBState.pending,
     })
     state!: WebHookCBState;
+    @Column({
+        type: "enum",
+        enum: WebHookEvent,
+        default: WebHookEvent.NULL,
+    })
+    event!: WebHookEvent;
     @Column()
     message!: string;
 }
