@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import { FontSource, FontSplit } from "./entity/font.js";
+import { WebHook, WebHookLog } from "./entity/webhook.js";
 
 export const AppDataSource = await new DataSource({
     type: "postgres",
@@ -10,7 +11,7 @@ export const AppDataSource = await new DataSource({
     database: "postgres",
     synchronize: true,
     logging: false,
-    entities: [FontSource, FontSplit],
+    entities: [FontSource, FontSplit, WebHook, WebHookLog],
     subscribers: [],
     migrations: [],
 }).initialize();
