@@ -57,11 +57,11 @@
     "colId": "02c6e963-8fd8-48b2-819e-eb7e152127df",
     "containerId": "",
     "name": "查询打包结果",
-    "url": "{{host}}/split?limit=5&offset=0&state=0&source=1",
+    "url": "{{host}}/split?limit=5&offset=0&state=2&source=1",
     "method": "GET",
     "sortNum": 10000,
     "created": "2023-05-16T00:02:33.710Z",
-    "modified": "2023-05-16T00:02:33.710Z",
+    "modified": "2023-05-16T11:43:29.950Z",
     "headers": [],
     "params": [
       {
@@ -76,7 +76,7 @@
       },
       {
         "name": "state",
-        "value": "0",
+        "value": "2",
         "isPath": false
       },
       {
@@ -120,11 +120,11 @@
     "colId": "c9b62013-2e58-4454-b756-fad88bc5f6d9",
     "containerId": "",
     "name": "用户字体列表",
-    "url": "{{host}}/fonts?limit=5&offset=0&q=测试",
+    "url": "{{host}}/fonts?limit=5&offset=0&q",
     "method": "GET",
     "sortNum": 10000,
     "created": "2023-05-16T00:03:10.410Z",
-    "modified": "2023-05-16T00:03:10.410Z",
+    "modified": "2023-05-16T11:43:07.064Z",
     "headers": [],
     "params": [
       {
@@ -139,7 +139,7 @@
       },
       {
         "name": "q",
-        "value": "测试",
+        "value": "",
         "isPath": false
       },
       {
