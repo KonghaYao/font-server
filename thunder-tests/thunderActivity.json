@@ -194,19 +194,5 @@
     "headers": [],
     "params": [],
     "tests": []
-  },
-  {
-    "_id": "e55d8d63-3797-4ecc-a030-5540525ddf5d",
-    "colId": "history",
-    "containerId": "",
-    "name": "{{host}}/sse",
-    "url": "{{host}}/sse",
-    "method": "GET",
-    "sortNum": 0,
-    "created": "2023-05-16T04:13:56.294Z",
-    "modified": "2023-05-16T04:13:56.294Z",
-    "headers": [],
-    "params": [],
-    "tests": []
   }
 ]

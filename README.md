@@ -13,6 +13,8 @@ font-server 为内网使用的 **字体存储、管理服务**，通过 WebHook 
 
 ## 软件设计
 
+> 项目语言：Typescript 一把梭，配合 Docker 、shell 自动化
+
 1. API Server
     1. 采用 Nodejs Typescript Koa 框架构建 Restful API 提供给系统外部使用
     2. 字体切割服务，暂时采用同一个服务器进行服务
