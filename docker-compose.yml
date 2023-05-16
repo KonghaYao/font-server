@@ -6,6 +6,7 @@ services:
             - db
         build: ./api
         environment:
+            - DB_HOST=db
             - DB_USERNAME=postgres
             - DB_PASSWORD=postgres
             - MINIO_POINT=minio
@@ -13,8 +14,6 @@ services:
             - MINIO_ROOT_PASSWORD=minioadmin
         ports:
             - "3000:3000"
-        volumes:
-            - ./api/node_modules:/app/node_modules
     db:
         image: postgres:14.1-alpine
         restart: always

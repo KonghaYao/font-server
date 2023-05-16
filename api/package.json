@@ -5,7 +5,7 @@
     "main": "dist/main.js",
     "type": "module",
     "scripts": {
-        "dev": "DB_USERNAME=postgres DB_PASSWORD=postgres MINIO_POINT=localhost MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin node dist/main.js",
+        "dev": "DB_HOST=localhost DB_USERNAME=postgres DB_PASSWORD=postgres MINIO_POINT=localhost MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin node dist/main.js",
         "build": "tsc"
     },
     "author": "",

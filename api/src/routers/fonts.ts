@@ -44,18 +44,17 @@ FontsRouter.post("/fonts", webhook(), async (ctx) => {
     }
     const name = file.hash! + path.extname(file.originalFilename!);
     const source_path = "user-fonts/" + name;
-    console.log(file.hash);
 
     // 上传 MINIO
     const cb = await minioClient.fPutObject("user-fonts", name, file.filepath);
-    console.log(name, cb);
+    console.log(name, cb, ctx.request.body);
 
     // 上传数据库
     const source = FontSource.create({
         path: source_path,
         md5: file.hash!,
         versions: [] as FontSplit[],
-        name: ctx.request.body.name ?? path.basename(file.originalFilename!),
+        name: ctx.request?.body?.name ?? path.basename(file.originalFilename!),
     });
 
     const res = await FontSourceRepo.save(source);
