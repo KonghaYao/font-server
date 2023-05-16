@@ -111,7 +111,12 @@ export function stream(opts: Partial<StreamConfig> = {}): Middleware {
         });
         ctx.response.stream = stream;
 
-        await next();
+        // ! 不能进行异步等待，需要直接返回数据
+        next().catch((e) => {
+            ctx.response.stream?.sendEnd({
+                error: e.message,
+            });
+        });
 
         if (!ctx.body) {
             ctx.body = ctx.response.stream;

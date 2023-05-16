@@ -17,7 +17,7 @@
   {
     "_id": "9777736e-8845-4fac-82b5-86c1acebd127",
     "name": "test",
-    "default": true,
+    "default": false,
     "sortNum": 10000,
     "created": "2023-05-16T11:36:24.375Z",
     "modified": "2023-05-16T11:36:24.375Z",
@@ -25,6 +25,20 @@
       {
         "name": "host",
         "value": "https://api-konghayao.cloud.okteto.net"
+      }
+    ]
+  },
+  {
+    "_id": "19da77d5-40d7-43ec-b551-512e779d5eb9",
+    "name": "dev",
+    "default": true,
+    "sortNum": 20000,
+    "created": "2023-05-16T23:41:17.935Z",
+    "modified": "2023-05-16T23:41:17.935Z",
+    "data": [
+      {
+        "name": "host",
+        "value": "http://localhost:3000"
       }
     ]
   }
