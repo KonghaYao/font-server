@@ -2,12 +2,14 @@ import Router from "@koa/router";
 import path from "path";
 import { minioClient } from "../oss/index.js";
 import { FontSourceRepo, FontSplitRepo } from "../db/db.js";
-import { FontSource, FontSplit, SplitEnum } from "../db/entity/font.js";
+import { FontSplit, SplitEnum } from "../db/entity/font.js";
 import { fontSplit } from "@konghayao/cn-font-split";
 import { createTempPath } from "../useTemp.js";
 import fs from "fs/promises";
 import { webhook } from "../middleware/webhook.js";
 import { WebHookEvent } from "../db/entity/webhook.js";
+import { stream } from "../middleware/stream.js";
+
 const SplitRouter = new Router();
 
 /* ! node 某一个版本新加的 api 导致库的环境判断失误，会BUG */
@@ -15,8 +17,8 @@ const SplitRouter = new Router();
 (globalThis as any).fetch = null;
 
 /** 切割字体 */
-SplitRouter.post("/split", webhook(), async (ctx) => {
-    // TODO 改用 SSE 返回数据
+SplitRouter.post("/split", stream(), webhook(), async (ctx) => {
+    const stream = ctx.response.stream!;
     const { id, md5 } = ctx.request.body;
     const item = await FontSourceRepo.findOneBy({ id: parseInt(id as string) });
     if (item && md5 === item.md5) {
@@ -47,6 +49,7 @@ SplitRouter.post("/split", webhook(), async (ctx) => {
         newFontSplit.state = SplitEnum.cutting;
         await FontSourceRepo.save(newFontSplit);
 
+        stream.send(["开始打包"]);
         await fontSplit({
             FontPath: tempFilePath,
             destFold: destFilePath,
@@ -54,6 +57,9 @@ SplitRouter.post("/split", webhook(), async (ctx) => {
             chunkSize: 70 * 1024,
             testHTML: false,
             previewImage: {},
+            log(...args: any[]) {
+                stream.send(args);
+            },
         });
 
         // 上传全部文件到 minio
@@ -69,12 +75,13 @@ SplitRouter.post("/split", webhook(), async (ctx) => {
                 );
             })
         );
+        stream.send(["存储 MINIO 完成"]);
 
         newFontSplit.folder = folder;
         newFontSplit.state = SplitEnum.success;
         await FontSplitRepo.save(newFontSplit);
 
-        ctx.body = JSON.stringify(newFontSplit);
+        stream.sendEnd(newFontSplit);
 
         // 发布 webhook
         ctx.response.webhook = {
