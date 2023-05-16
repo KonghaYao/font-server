@@ -33,16 +33,24 @@ font-server 为内网使用的 **字体存储、管理服务**，通过 WebHook 
 
 1. **clone 本仓库** OR **fork 它并打开 Github Workspace**
 
-2. 下载测试文件（可跳过）
-
-```bash
-sudo sh scripts/downloadFonts.sh # 需要 linux 环境 curl unzip
-```
-
 2. 在根目录运行
 
 ```sh
 docker-compose up -d
+```
+
+## 半自动测试
+
+1. 自动下载测试字体文件
+
+```bash
+sudo sh scripts/init.sh # 需要 linux 环境 curl unzip
+```
+
+2. 自动注入基本测试数据
+
+```sh
+sudo sh scripts/injectFonts.sh
 ```
 
 3. VSCode 安装 Thunder Client
