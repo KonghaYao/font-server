@@ -1,0 +1,348 @@
+openapi: "3.0.2"
+info:
+    title: Font Server API
+    version: "1.0"
+    description: 接口为 ChatGPT 生成为主，返回数据格式大部分是错误的，所以自己post 一下好, 这个文档实在太难维护了，后期将会使用代码自动生成
+servers:
+    - url: http://localhost:3000
+paths:
+    /fonts:
+        get:
+            summary: 获取用户字体列表
+            parameters:
+                - in: query
+                  name: limit
+                  schema:
+                      type: integer
+                  description: 返回结果最大数量
+                - in: query
+                  name: offset
+                  schema:
+                      type: integer
+                  description: 返回结果起始位置
+                - in: query
+                  name: q
+                  schema:
+                      type: string
+                  description: 按照名称模糊搜索字体
+                - in: query
+                  name: versions
+                  schema:
+                      type: boolean
+                  description: 是否返回字体各个版本信息
+
+            responses:
+                "200":
+                    description: 成功获取用户字体列表
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/FontSource"
+        post:
+            summary: 用户上传字体
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                font:
+                                    type: string
+                                    format: binary
+                                    description: 要上传的字体文件
+                                name:
+                                    type: string
+                                    description: 要上传的字体名称，可选
+                            required:
+                                - font
+            responses:
+                "200":
+                    description: 成功上传用户字体
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/FontSource"
+    /fonts/{id}:
+        get:
+            summary: 获取指定 id 的字体信息
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+                  description: 字体 id
+            responses:
+                "200":
+                    description: 成功获取指定 id 的字体信息
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/FontSource"
+        delete:
+            summary: 删除指定 id 的字体信息（接口未实现）
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: integer
+                  description: 字体 id
+            responses:
+                "200":
+                    description: 成功删除指定 id 的字体信息
+    /split:
+        post:
+            summary: 切割字体
+            tags:
+                - SplitRouter
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                id:
+                                    type: string
+                                    description: 字体 ID
+                                md5:
+                                    type: string
+                                    description: 字体 MD5 值
+                            required:
+                                - id
+                                - md5
+            responses:
+                "200":
+                    description: 成功
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/FontSplitCallback"
+        get:
+            summary: 获取字体切割任务列表
+            tags:
+                - SplitRouter
+            parameters:
+                - name: limit
+                  in: query
+                  description: 每页返回的数量
+                  required: false
+                  schema:
+                      type: integer
+                - name: offset
+                  in: query
+                  description: 跳过的数量
+                  required: false
+                  schema:
+                      type: integer
+                - name: state
+                  in: query
+                  description: 切割状态码
+                  required: false
+                  schema:
+                      type: integer
+                - name: source
+                  in: query
+                  description: 源字体 ID
+                  required: false
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: 成功
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/FontSplitInfo"
+    /webhook:
+        post:
+            summary: 添加一个事件订阅
+            tags:
+                - WebHook
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                url:
+                                    type: string
+                            required:
+                                - url
+            responses:
+                "200":
+                    description: 成功创建事件订阅
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                        example: 1
+                                    url:
+                                        type: string
+                                        example: http://example.com
+                "400":
+                    description: 请求格式错误
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: 没有输入 url
+        delete:
+            summary: 删除一个事件订阅
+            tags:
+                - WebHook
+            parameters:
+                - in: query
+                  name: id
+                  schema:
+                      type: integer
+                  required: true
+                  description: 需要删除的订阅 ID
+            responses:
+                "200":
+                    description: 成功删除事件订阅
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                        example: true
+
+        patch:
+            summary: 测试订阅事件
+            tags:
+                - WebHook
+            responses:
+                "200":
+                    description: 模拟 webhook 接收到了事件
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    event:
+                                        type: string
+                                        example: null
+                                    payload:
+                                        type: object
+                                        example: { "test": 120392039 }
+components:
+    schemas:
+        FontSplit:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: 字体名称
+                path:
+                    type: string
+                    description: 字体路径
+                md5:
+                    type: string
+                    description: 字体 md5 值
+        FontSource:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 字体 id
+                path:
+                    type: string
+                    description: 字体路径
+                md5:
+                    type: string
+                    description: 字体 md5 值
+                name:
+                    type: string
+                    description: 字体名称
+                versions:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/FontSplit"
+                    description: 字体版本信息
+        FontSplitCallback:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: 字体切割 ID
+                source:
+                    type: object
+                    description: 切割的源字体
+                    properties:
+                        id:
+                            type: integer
+                            description: 源字体 ID
+                        name:
+                            type: string
+                            description: 源字体名称
+                        path:
+                            type: string
+                            description: 源字体文件路径
+                        previewPath:
+                            type: string
+                            description: 源字体预览图路径
+                        md5:
+                            type: string
+                            description: 源字体文件的 MD5 值
+                        createdAt:
+                            type: string
+                            description: 源字体创建时间
+                        updatedAt:
+                            type: string
+                            description: 源字体更新时间
+                state:
+                    type: integer
+                    description: 切割状态码
+                folder:
+                    type: string
+                    description: 切割后存储的文件夹路径（相对于字体的 MD5 值）
+        FontSplitInfo:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: integer
+                        description: 字体切割 ID
+                    source:
+                        type: object
+                        description: 切割的源字体
+                        properties:
+                            id:
+                                type: integer
+                                description: 源字体 ID
+                            name:
+                                type: string
+                                description: 源字体名称
+                            path:
+                                type: string
+                                description: 源字体文件路径
+                            previewPath:
+                                type: string
+                                description: 源字体预览图路径
+                            md5:
+                                type: string
+                                description: 源字体文件的 MD5 值
+                            createdAt:
+                                type: string
+                                description: 源字体创建时间
+                            updatedAt:
+                                type: string
+                    state:
+                        type: integer
+                        description: 切割状态码
+                    folder:
+                        type: string
+                        description: 切割后存储的文件夹路径（相对于字体的 MD5 值）

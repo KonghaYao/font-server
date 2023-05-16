@@ -34,6 +34,8 @@ FontsRouter.get("/fonts/:id", async (ctx) => {
     ctx.body = JSON.stringify(query);
 });
 
+// TODO 删除用户上传字体
+
 /** 用户上传字体 */
 FontsRouter.post("/fonts", webhook(), async (ctx) => {
     // 检查输入
