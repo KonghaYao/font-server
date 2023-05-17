@@ -20,7 +20,7 @@ node_modules
 dist
 data
 temp
-
+.env
 # Configuration
 wp-config.php
 
