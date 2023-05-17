@@ -89,7 +89,9 @@ SplitRouter.post("/split", stream(), webhook(), async (ctx) => {
             payload: newFontSplit,
         };
     } else {
-        throw new Error(`font id: ${id} and md5: ${md5} not found! `);
+        ctx.response.stream?.sendEnd({
+            error: `${item?.id} or ${item?.md5} not found`,
+        });
     }
 });
 
