@@ -1,19 +1,18 @@
 import COS from "cos-nodejs-sdk-v5";
 import axios from "axios";
-import { getSelfIPs } from "./utils/getSelfIPs";
+import { getSelfIPs } from "./utils/getSelfIPs.js";
 import pLimit from "p-limit";
 interface COSConfig {
-    SecretId: string;
-    SecretKey: string;
     Bucket: string;
     Region: string;
 }
 
 export class COSAdapter extends COS {
     constructor(opt: COS.COSOptions, public config: COSConfig) {
-        super(opt);
+        super({ ...opt, ...config });
     }
 
+    /** 1. 初始化远程服务器 */
     async init() {
         const isExisted = await this.checkBucket();
         if (!isExisted) {
@@ -49,13 +48,28 @@ export class COSAdapter extends COS {
             this.putBucket(config, (err, data) => (err ? rej(err) : res(data)));
         });
     }
+    /** 2. 订阅 IP 地址 */
+    async subscribeWebHook() {
+        const ipAddresses = getSelfIPs();
 
-    /** 同步内部对象存储到远程 */
+        console.log(`本机 IP 地址：${ipAddresses.join(", ")}`);
+        return fetch(process.env.WEBHOOK_HOST + "/webhook", {
+            method: "POST",
+            body: JSON.stringify({
+                url:
+                    "http://" + ipAddresses[0] + ":" + process.env.PORT ?? "80",
+            }),
+            headers: { "content-type": "application/json" },
+        })
+            .then((res) => res.json())
+            .then((res) => console.log(res));
+    }
+    /** 3. 同步内部对象存储到远程 */
     async syncAllFiles() {
         const records = await axios
             .get(process.env.WEBHOOK_HOST + "/split", {
                 params: {
-                    limit: 30000,
+                    limit: 999999,
                     offset: 0,
                     state: 2,
                 },
@@ -117,10 +131,9 @@ export class COSAdapter extends COS {
             responseType: "stream",
             url: process.env.MINIO_HOST + "/" + path,
         }).then((res) => {
-            const length = res?.headers?.["Content-Length"];
+            /** @ts-ignore */
+            const length = res.headers.get("content-length") as string;
             if (!length) throw new Error(path + " 长度有误");
-            console.log(length);
-
             return {
                 stream: res.data,
                 length: parseInt(length as string),
@@ -135,25 +148,11 @@ export class COSAdapter extends COS {
                     /* 当 Body 为 stream 类型时，ContentLength 必传，否则 onProgress 不能返回正确的进度信息 */
                     Body: response.stream,
                     ContentLength: response.length,
-                    onProgress: function (progressData) {
-                        console.log(JSON.stringify(progressData));
-                    },
                 },
                 (err, data) => (err ? rej(err) : res(data))
             );
         });
     }
-    /** 订阅 IP 地址 */
-    async subscribeWebHook() {
-        const ipAddresses = getSelfIPs();
 
-        console.log(`本机 IP 地址：${ipAddresses.join(", ")}`);
-        return fetch(process.env.WEBHOOK_HOST + "/webhook", {
-            method: "POST",
-            body: JSON.stringify({ url: ipAddresses[0] }),
-            headers: { "content-type": "application/json" },
-        })
-            .then((res) => res.json())
-            .then((res) => console.log(res));
-    }
+    /** 4. 监听事件 */
 }
