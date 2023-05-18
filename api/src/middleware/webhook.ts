@@ -15,7 +15,7 @@ declare module "koa" {
     }
 }
 
-/** 发布 WebHook 事件 */
+/** 自动发布 WebHook 事件 */
 export const webhook = (): Middleware => {
     return async (ctx, next) => {
         await next();
