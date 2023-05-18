@@ -8,6 +8,11 @@ export class WebHook extends Record {
     @Column()
     @Unique("url_unique", ["url"])
     url!: string;
+
+    @OneToMany((type) => WebHookLog, (webHookLog) => webHookLog.id, {
+        onDelete: "CASCADE",
+    })
+    webHookLogs!: WebHookLog[];
 }
 
 export enum WebHookCBState {

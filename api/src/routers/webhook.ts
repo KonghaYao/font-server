@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { WebHookRepo } from "../db/db.js";
 import { webhook } from "../middleware/webhook.js";
-import { WebHookEvent } from "../db/entity/webhook.js";
+import { WebHookEvent, WebHookLog } from "../db/entity/webhook.js";
 const WebHookRouter = new Router();
 
 /** 添加一个事件订阅 */
@@ -22,6 +22,10 @@ WebHookRouter.delete("/webhook", async (ctx) => {
     const id = ctx.request.query.id;
     const item = await WebHookRepo.findOneBy({ id: parseInt(id as string) });
     if (item) {
+        const logs = await WebHookLog.createQueryBuilder()
+            .where('"sourceId" = :id', { id: item.id })
+            .getMany();
+        await WebHookLog.remove(logs);
         ctx.body = JSON.stringify(await WebHookRepo.remove([item]));
     } else {
         ctx.body = JSON.stringify({ error: `没有发现 id 为${id}` });
