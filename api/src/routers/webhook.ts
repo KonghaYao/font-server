@@ -18,9 +18,9 @@ WebHookRouter.post("/webhook", async (ctx) => {
     }
 });
 /** 删除一个事件订阅 */
-WebHookRouter.delete("/webhook", async (ctx) => {
-    const id = ctx.request.query.id;
-    const item = await WebHookRepo.findOneBy({ id: parseInt(id as string) });
+WebHookRouter.delete("/webhook/:id", async (ctx) => {
+    const { id } = ctx.params;
+    const item = await WebHookRepo.findOneBy({ id: parseInt(id) });
     if (item) {
         const logs = await WebHookLog.createQueryBuilder()
             .where('"sourceId" = :id', { id: item.id })

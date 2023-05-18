@@ -8,7 +8,7 @@ import { createTempPath } from "../useTemp.js";
 import fs from "fs/promises";
 import { webhook } from "../middleware/webhook.js";
 import { WebHookEvent } from "../db/entity/webhook.js";
-import { stream } from "../middleware/stream.js";
+import { stream } from "../middleware/stream/index.js";
 
 const SplitRouter = new Router();
 
