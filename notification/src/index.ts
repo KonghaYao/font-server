@@ -8,9 +8,13 @@ const cos = new COSAdapter(
     },
     { Bucket: process.env.Bucket!, Region: process.env.Region! }
 );
+console.log("初始化远程");
 await cos.init();
 await cos.subscribeWebHook();
 await cos.syncAllFiles();
+
+// 记得挂一个缓存控制
+// await cos.changeCORS();
 const app = new Koa();
 
 // 一些中间件
@@ -40,7 +44,6 @@ app.use(
     )
     .use((ctx) => {
         const data = ctx.request.body;
-        console.log(data);
         if (data.event === 1) {
             console.log("同步文件夹 ", data.payload.folder);
             // console.log(data.payload);
@@ -48,6 +51,8 @@ app.use(
                 files: data.payload.files.map(
                     (i: string) => "result-fonts/" + i
                 ),
+            }).then((res) => {
+                console.log("同步文件夹完成 ", data.payload.folder);
             });
         }
         // return cos.syncDir(data);

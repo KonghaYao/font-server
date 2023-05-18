@@ -1,0 +1,9 @@
+```sh
+SecretId=
+SecretKey=
+Bucket=
+Region=ap-nanjing
+WEBHOOK_HOST=http://localhost:3000
+MINIO_HOST=http://localhost:9000
+PORT=3001
+```

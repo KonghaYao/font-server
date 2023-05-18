@@ -143,6 +143,7 @@ export class COSAdapter extends COS {
             this.putObject(
                 {
                     ...this.config,
+
                     Key: path,
                     StorageClass: "STANDARD",
                     /* 当 Body 为 stream 类型时，ContentLength 必传，否则 onProgress 不能返回正确的进度信息 */
@@ -155,4 +156,25 @@ export class COSAdapter extends COS {
     }
 
     /** 4. 监听事件 */
+
+    changeCORS() {
+        return this.putBucketCors({
+            ...this.config,
+            CORSRules: [
+                {
+                    AllowedOrigin: ["*"],
+                    AllowedMethod: ["GET", "POST", "PUT", "DELETE", "HEAD"],
+                    AllowedHeader: ["*"],
+                    ExposeHeader: [
+                        "ETag",
+                        "x-cos-acl",
+                        "x-cos-version-id",
+                        "x-cos-delete-marker",
+                        "x-cos-server-side-encryption",
+                    ],
+                    MaxAgeSeconds: 5,
+                },
+            ],
+        });
+    }
 }
