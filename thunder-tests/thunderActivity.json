@@ -112,11 +112,11 @@
     "colId": "history",
     "containerId": "",
     "name": "查询打包结果",
-    "url": "{{host}}/split?limit=5&offset=0&state=0&source=1",
+    "url": "{{host}}/split?limit=5&offset=0&state=2&source=1",
     "method": "GET",
     "sortNum": 0,
     "created": "2023-05-14T23:30:22.941Z",
-    "modified": "2023-05-16T00:00:10.695Z",
+    "modified": "2023-05-18T00:32:42.225Z",
     "headers": [],
     "params": [
       {
@@ -131,7 +131,7 @@
       },
       {
         "name": "state",
-        "value": "0",
+        "value": "2",
         "isPath": false
       },
       {
@@ -191,6 +191,20 @@
     "sortNum": 0,
     "created": "2023-05-15T10:05:06.079Z",
     "modified": "2023-05-15T10:17:32.514Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "a8c6a720-0c37-4c6f-9af5-b9c91eb447bb",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:9000/result-fonts/daf00ca6691141c1508ef912397947f4/3/result.css",
+    "url": "http://localhost:9000/result-fonts/daf00ca6691141c1508ef912397947f4/3/result.css",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-05-18T00:12:08.805Z",
+    "modified": "2023-05-18T00:12:08.805Z",
     "headers": [],
     "params": [],
     "tests": []
