@@ -33,10 +33,10 @@ export class FontSplit extends Record {
     @ManyToOne(() => FontSource, (source) => source.versions)
     source!: FontSource;
     /** 对应内部 OSS 中的切割文件成果文件夹的 URL  */
-    @Column()
+    @Column("text", { nullable: true })
     folder!: string;
 
-    @Column("simple-array")
+    @Column("text", { array: true, nullable: true })
     files!: string[];
 
     @Column({
