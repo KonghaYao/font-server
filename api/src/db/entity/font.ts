@@ -36,6 +36,9 @@ export class FontSplit extends Record {
     @Column()
     folder!: string;
 
+    @Column("simple-array")
+    files!: string[];
+
     @Column({
         type: "enum",
         enum: SplitEnum,

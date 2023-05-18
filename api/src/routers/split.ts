@@ -65,19 +65,18 @@ SplitRouter.post("/split", stream(), webhook(), async (ctx) => {
         // 上传全部文件到 minio
         const folder = path.join(item.md5, newFontSplit.id.toString());
         const data = await fs.readdir(destFilePath);
-        await Promise.all(
+        const paths = await Promise.all(
             data.map(async (i) => {
                 const file = path.join(destFilePath, i);
-                await minioClient.fPutObject(
-                    "result-fonts",
-                    path.join(folder, i),
-                    file
-                );
+                const newPath = path.join(folder, i);
+                await minioClient.fPutObject("result-fonts", newPath, file);
+                return newPath;
             })
         );
         stream.send(["存储 MINIO 完成"]);
 
         newFontSplit.folder = folder;
+        newFontSplit.files = paths;
         newFontSplit.state = SplitEnum.success;
         await FontSplitRepo.save(newFontSplit);
 
