@@ -1,12 +1,14 @@
 import COS from "cos-nodejs-sdk-v5";
 import axios from "axios";
-import { getSelfIPs } from "./getSelfIPs";
+import { getSelfIPs } from "./utils/getSelfIPs";
+import pLimit from "p-limit";
 interface COSConfig {
     SecretId: string;
     SecretKey: string;
     Bucket: string;
     Region: string;
 }
+
 export class COSAdapter extends COS {
     constructor(opt: COS.COSOptions, public config: COSConfig) {
         super(opt);
@@ -45,6 +47,68 @@ export class COSAdapter extends COS {
         return new Promise<COS.PutBucketResult>((res, rej) => {
             console.log("创建桶 " + this.config.Bucket);
             this.putBucket(config, (err, data) => (err ? rej(err) : res(data)));
+        });
+    }
+
+    /** 同步内部对象存储到远程 */
+    async syncAllFiles() {
+        const records = await axios
+            .get(process.env.WEBHOOK_HOST + "/split", {
+                params: {
+                    limit: 30000,
+                    offset: 0,
+                    state: 2,
+                },
+            })
+            .then(
+                (res) =>
+                    res.data as {
+                        folder: string;
+                        files: string[];
+                        id: number;
+                    }[]
+            );
+
+        for (const item of records) {
+            const isExisted = await this.isExistedFolder(
+                "result-fonts/" + item.folder
+            );
+            if (!isExisted) {
+                await this.syncDir({
+                    files: item.files.map((i) => "result-fonts/" + i),
+                });
+                console.log("同步文件夹完成 ", item.id, item.folder);
+            }
+        }
+    }
+
+    /** 并发同步文件夹 */
+    async syncDir(item: { files: string[] }) {
+        const limit = pLimit(3);
+        const list: Promise<COS.PutObjectResult>[] = [];
+        for (const path of item.files) {
+            list.push(limit(() => this.syncWithBucket(path)));
+        }
+        return Promise.all(list);
+    }
+    async isExistedFolder(folder: string) {
+        return new Promise<boolean>((res, rej) => {
+            this.headObject(
+                {
+                    ...this.config,
+                    Key: folder + "/result.css",
+                },
+                (err, data) => {
+                    if (err) {
+                        if (err.statusCode == 404) {
+                            res(false);
+                        } else if (err.statusCode == 403) {
+                            rej("没有该对象读权限");
+                        }
+                    }
+                    if (data) res(true);
+                }
+            );
         });
     }
     /** 构建流式同步传输 */

@@ -82,7 +82,7 @@ sudo sh scripts/init.sh # 需要 linux 环境 curl unzip
 2. 自动注入基本测试数据
 
 ```sh
-sudo sh scripts/injectFonts.sh
+sudo HOST=http://localhost:3000 sh scripts/injectFonts.sh
 ```
 
 3. VSCode 安装 Thunder Client
