@@ -6,6 +6,7 @@ import { Record } from "./record.js";
 export class WebHook extends Record {
     /** 监听的 URL */
     @Column()
+    @Unique("url_unique", ["url"])
     url!: string;
 }
 
