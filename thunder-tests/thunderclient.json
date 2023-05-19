@@ -195,5 +195,76 @@
     "headers": [],
     "params": [],
     "tests": []
+  },
+  {
+    "_id": "f5f04763-10d1-4dda-8316-25c47f2211c8",
+    "colId": "de7c547d-96ff-4e03-8097-e34cd052374e",
+    "containerId": "",
+    "name": "查询单个订阅及其日志",
+    "url": "{{host}}/webhook/8?logs=true&offset=0&limit=20",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2023-05-19T00:02:20.935Z",
+    "modified": "2023-05-19T00:47:49.949Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "logs",
+        "value": "true",
+        "isPath": false
+      },
+      {
+        "name": "offset",
+        "value": "0",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "20",
+        "isPath": false
+      },
+      {
+        "name": "self",
+        "value": "false",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"url\":\"http://localhost:8888\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "8cfe35d9-f38f-4b09-a219-1bd96ff431a3",
+    "colId": "de7c547d-96ff-4e03-8097-e34cd052374e",
+    "containerId": "",
+    "name": "查询单个订阅及其日志 Copy",
+    "url": "{{host}}/webhook/?offset=0&limit=20&q=170",
+    "method": "GET",
+    "sortNum": 50000,
+    "created": "2023-05-19T00:48:41.958Z",
+    "modified": "2023-05-19T00:49:51.785Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "offset",
+        "value": "0",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "20",
+        "isPath": false
+      },
+      {
+        "name": "q",
+        "value": "170",
+        "isPath": false
+      }
+    ],
+    "tests": []
   }
 ]

@@ -46,6 +46,7 @@ export const webhook = (): Middleware => {
                     .then((res: any) => {
                         log.message = res.message;
                         log.state = WebHookCBState.success;
+
                         return log.save();
                     })
                     .catch((e: Error) => {

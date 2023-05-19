@@ -1,8 +1,49 @@
 import Router from "@koa/router";
 import { WebHookRepo } from "../db/db.js";
 import { webhook } from "../middleware/webhook.js";
-import { WebHookEvent, WebHookLog } from "../db/entity/webhook.js";
+import { WebHook, WebHookEvent, WebHookLog } from "../db/entity/webhook.js";
+import { Like } from "typeorm";
 const WebHookRouter = new Router();
+
+/** 获取订阅事件列表 */
+WebHookRouter.get("/webhook", async (ctx) => {
+    const { limit, offset, q } = ctx.query;
+    const res = await WebHook.find({
+        skip: parseInt(offset as string),
+        take: parseInt(limit as string),
+        where: q
+            ? {
+                  url: Like(`%${q}%`),
+              }
+            : undefined,
+        order: {
+            id: "DESC",
+        },
+    });
+    ctx.body = JSON.stringify(res);
+});
+
+/** 查询单个订阅 */
+WebHookRouter.get("/webhook/:id", async (ctx) => {
+    const { id } = ctx.params;
+    const { logs, limit, offset, self } = ctx.query;
+    const res = await WebHook.findOne({
+        where: {
+            id: parseInt(id),
+        },
+    });
+
+    ctx.body = JSON.stringify({
+        data: self === "false" ? null : res,
+        logs: logs
+            ? await WebHookLog.createQueryBuilder()
+                  .where('"sourceId" = :id', { id: res!.id })
+                  .skip(parseInt(offset as string))
+                  .take(parseInt(limit as string))
+                  .getMany()
+            : null,
+    });
+});
 
 /** 添加一个事件订阅 */
 WebHookRouter.post("/webhook", async (ctx) => {

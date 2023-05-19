@@ -77,6 +77,7 @@ SplitRouter.post("/split", stream(), webhook(), async (ctx) => {
 
         newFontSplit.folder = folder;
         newFontSplit.files = paths;
+
         newFontSplit.state = SplitEnum.success;
         await FontSplitRepo.save(newFontSplit);
 

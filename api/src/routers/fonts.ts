@@ -15,9 +15,11 @@ FontsRouter.get("/fonts", async (ctx) => {
     const res = await FontSourceRepo.find({
         skip: parseInt(offset as string),
         take: parseInt(limit as string),
-        where: {
-            name: Like(`%${q}%`),
-        },
+        where: q
+            ? {
+                  name: Like(`%${q}%`),
+              }
+            : undefined,
         order: {
             id: "DESC",
         },
@@ -70,7 +72,5 @@ FontsRouter.post("/fonts", webhook(), async (ctx) => {
         data,
     });
 });
-
-
 
 export { FontsRouter };

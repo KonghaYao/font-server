@@ -1,4 +1,11 @@
-import { Entity, Column, ManyToOne, OneToMany, Unique } from "typeorm";
+import {
+    Entity,
+    Column,
+    ManyToOne,
+    OneToMany,
+    Unique,
+    JoinColumn,
+} from "typeorm";
 import { Record } from "./record.js";
 
 /** web hook */
@@ -12,7 +19,7 @@ export class WebHook extends Record {
     @OneToMany((type) => WebHookLog, (webHookLog) => webHookLog.id, {
         onDelete: "CASCADE",
     })
-    webHookLogs!: WebHookLog[];
+    logs!: WebHookLog[];
 }
 
 export enum WebHookCBState {

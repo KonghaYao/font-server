@@ -1,5 +1,5 @@
 import { Middleware } from "koa";
-import { StreamTransform } from "./StreamTransform";
+import { StreamTransform } from "./StreamTransform.js";
 export interface StreamConfig {
     maxClients: number;
     pingInterval: number;
