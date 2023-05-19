@@ -1,7 +1,6 @@
 import COS from "cos-nodejs-sdk-v5";
-import axios from "axios";
-import pLimit from "p-limit";
-import { RemoteStorage, RemoteStorageDefault } from "../RemoteStorage.js";
+import { RemoteStorage } from "../RemoteStorage.js";
+import { RemoteFactory } from "../RemoteFactory.js";
 interface COSConfig {
     Bucket: string;
     Region: string;
@@ -12,12 +11,6 @@ interface COSConfig {
 export class COSAdapter extends COS implements RemoteStorage {
     constructor(opt: COS.COSOptions, public config: COSConfig) {
         super({ ...opt, ...config });
-    }
-    async getSyncMessage(payload: { files: string[] }): Promise<void> {
-        await this.syncDir({
-            files: payload.files,
-        });
-        return;
     }
 
     async init() {
@@ -56,49 +49,16 @@ export class COSAdapter extends COS implements RemoteStorage {
         });
     }
 
-    subscribeWebHook = RemoteStorageDefault.subscribeWebHook;
-    /** 3. 同步内部对象存储到远程 */
-    async syncAllFiles() {
-        const records = await axios
-            .get(this.config.WEBHOOK_HOST + "/split", {
-                params: {
-                    limit: 999999,
-                    offset: 0,
-                    state: 2,
-                },
-            })
-            .then(
-                (res) =>
-                    res.data as {
-                        folder: string;
-                        files: string[];
-                        id: number;
-                    }[]
-            );
-
-        for (const item of records) {
-            const isExisted = await this.isExistedFolder(
-                "result-fonts/" + item.folder
-            );
-            if (!isExisted) {
-                await this.syncDir({
-                    files: item.files.map((i) => "result-fonts/" + i),
-                });
-                console.log("同步文件夹完成 ", item.id, item.folder);
-            }
-        }
-    }
-
-    /** 并发同步文件夹 */
-    async syncDir(item: { files: string[] }) {
-        const limit = pLimit(3);
-        const list: Promise<COS.PutObjectResult>[] = [];
-        for (const path of item.files) {
-            list.push(limit(() => this.syncWithBucket(path)));
-        }
-        return Promise.all(list);
-    }
-
+    subscribeWebHook = RemoteFactory.subscribeWebHook;
+    syncAllFiles = RemoteFactory.createSyncAllFile(
+        () => this.config.MINIO_HOST,
+        this.uploadSingleStream,
+        this.isExistedFolder
+    );
+    getSyncMessage = RemoteFactory.createSyncMessageCallback(
+        this.uploadSingleStream
+    );
+    /** 判断远程是否存在 */
     async isExistedFolder(folder: string) {
         return new Promise<boolean>((res, rej) => {
             this.headObject(
@@ -120,19 +80,11 @@ export class COSAdapter extends COS implements RemoteStorage {
         });
     }
     /** 构建流式同步传输 */
-    async syncWithBucket(path: string) {
-        const response = await axios({
-            responseType: "stream",
-            url: this.config.MINIO_HOST + "/" + path,
-        }).then((res) => {
-            /** @ts-ignore */
-            const length = res.headers.get("content-length") as string;
-            if (!length) throw new Error(path + " 长度有误");
-            return {
-                stream: res.data,
-                length: parseInt(length as string),
-            };
-        });
+    async uploadSingleStream(path: string) {
+        const response = await RemoteFactory.createFileStream(
+            this.config.MINIO_HOST,
+            path
+        );
         return new Promise<COS.PutObjectResult>((res, rej) => {
             this.putObject(
                 {
