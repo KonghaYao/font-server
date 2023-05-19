@@ -1,13 +1,19 @@
-import COS from "cos-nodejs-sdk-v5";
-import dotenv from "dotenv";
-import os from "os";
-dotenv.config("./.env");
-const cos = new COS({
-    SecretId: process.env.SecretId,
-    SecretKey: process.env.SecretKey,
-});
+import { COSAdapter } from "./dist/adapter/COS.js";
+import { PusherCore } from "../dist/core.js";
 
-const config = {
-    Bucket: "fonts-1251037601",
-    Region: "ap-nanjing",
-};
+const core = new PusherCore(
+    new COSAdapter(
+        {
+            SecretId: process.env.SecretId,
+            SecretKey: process.env.SecretKey,
+        },
+        {
+            Bucket: process.env.Bucket,
+            Region: process.env.Region,
+            WEBHOOK_HOST: process.env.WEBHOOK_HOST,
+            MINIO_HOST: process.env.MINIO_HOST,
+        }
+    ),
+    { port: process.env.PORT ? parseInt(process.env.PORT) : 3001 }
+);
+core.run();

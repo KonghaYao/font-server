@@ -2,9 +2,10 @@
     "name": "notification",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
-        "test": "dotenv node ./dist/index.js"
+        "test": "dotenv node ./test/index.js",
+        "prepublish": "tsc"
     },
     "type": "module",
     "author": "",
@@ -12,14 +13,12 @@
     "dependencies": {
         "axios": "^1.4.0",
         "cos-nodejs-sdk-v5": "^2.12.1",
-        "dotenv": "^16.0.3",
         "koa": "^2.14.2",
         "koa-body": "^6.0.1",
         "p-limit": "^4.0.0"
     },
     "devDependencies": {
         "@types/node": "^20.1.7",
-        "dotenv-cli": "^7.2.1",
         "typescript": "^5.0.4"
     }
 }
