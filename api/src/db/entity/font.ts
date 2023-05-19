@@ -11,6 +11,8 @@ export class FontSource extends Record {
 
     @Column()
     name!: string;
+    @Column()
+    size!: number;
 
     @Column()
     @Unique("user_fonts_unique", ["md5"])
