@@ -6,12 +6,47 @@
 
 1. ✅ 腾讯云 COS
 
+## 使用指南
+
+### 定义环境变量
+
+环境变量分为 font-server 后台的一些服务和 Adapter 层需要填写的信息
+
 ```sh
+
+WEBHOOK_HOST=http://localhost:3000
+MINIO_HOST=http://localhost:9000
+PORT=3001
+
 SecretId=
 SecretKey=
 Bucket=
 Region=ap-nanjing
-WEBHOOK_HOST=http://localhost:3000
-MINIO_HOST=http://localhost:9000
-PORT=3001
+
+
+
+
+```
+
+### 编写入口代码
+
+```js
+import { PusherCore, COSAdapter } from "@konghayao/font-server-pusher";
+
+const core = new PusherCore(
+    new COSAdapter(
+        {
+            SecretId: process.env.SecretId,
+            SecretKey: process.env.SecretKey,
+        },
+        {
+            Bucket: process.env.Bucket,
+            Region: process.env.Region,
+            WEBHOOK_HOST: process.env.WEBHOOK_HOST,
+            MINIO_HOST: process.env.MINIO_HOST,
+        }
+    ),
+    { port: process.env.PORT ? parseInt(process.env.PORT) : 3001 }
+);
+core.run();
 ```
