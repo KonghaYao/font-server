@@ -14,7 +14,12 @@ export const AppDataSource = await new DataSource({
     entities: [FontSource, FontSplit, WebHook, WebHookLog],
     subscribers: [],
     migrations: [],
-}).initialize();
+})
+    .initialize()
+    .then((app) => {
+        console.log("构建数据库完成");
+        return app;
+    });
 export const FontSourceRepo = AppDataSource.getRepository(FontSource);
 export const FontSplitRepo = AppDataSource.getRepository(FontSplit);
 export const WebHookRepo = AppDataSource.getRepository(WebHook);

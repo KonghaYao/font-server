@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "dev": "DB_HOST=localhost DB_USERNAME=postgres DB_PASSWORD=postgres MINIO_POINT=localhost MINIO_ROOT_USER=minioadmin MINIO_ROOT_PASSWORD=minioadmin node dist/main.js ",
+        "deploy": "node ./dist/init.js && pm2 start dist/main.js -i max -n font-server --no-daemon",
         "build": "tsc"
     },
     "author": "",

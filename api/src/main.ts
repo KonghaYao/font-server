@@ -4,7 +4,7 @@ import { koaBody } from "koa-body";
 import logger from "koa-logger";
 import { FontsRouter } from "./routers/fonts.js";
 import { SplitRouter } from "./routers/split.js";
-import { initMinio } from "./oss/index.js";
+
 import { WebHookRouter } from "./routers/webhook.js";
 const app = new Koa();
 const router = new Router();
@@ -43,9 +43,6 @@ app.use(
     .use(router.routes())
     .use(router.allowedMethods());
 
-(async () => {
-    await initMinio();
-    app.listen(3000, () => {
-        console.log("服务启动了");
-    });
-})();
+app.listen(3000, () => {
+    console.log("服务启动了");
+});
