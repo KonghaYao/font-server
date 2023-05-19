@@ -14,7 +14,7 @@ export class RemoteStorageDefault {
             headers: { "content-type": "application/json" },
         })
             .then((res) => res.json())
-            .then((res) => console.log(res));
+            .then((res) => console.log("加入订阅完成", res));
     };
 }
 

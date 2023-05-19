@@ -1,7 +1,7 @@
 import COS from "cos-nodejs-sdk-v5";
 import axios from "axios";
 import pLimit from "p-limit";
-import { RemoteStorage, RemoteStorageDefault } from "../RemoteStorage";
+import { RemoteStorage, RemoteStorageDefault } from "../RemoteStorage.js";
 interface COSConfig {
     Bucket: string;
     Region: string;
@@ -15,7 +15,7 @@ export class COSAdapter extends COS implements RemoteStorage {
     }
     async getSyncMessage(payload: { files: string[] }): Promise<void> {
         await this.syncDir({
-            files: payload.files.map((i: string) => "result-fonts/" + i),
+            files: payload.files,
         });
         return;
     }

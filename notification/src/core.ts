@@ -47,18 +47,20 @@ export class PusherCore {
                     },
                 })
             )
-            .use((ctx) => {
+            .use(async (ctx) => {
                 const data = ctx.request.body;
                 if (data.event === 1) {
                     console.log("同步文件夹 ", data.payload.folder);
                     // console.log(data.payload);
-                    cos.getSyncMessage({
-                        files: data.payload.files.map(
-                            (i: string) => "result-fonts/" + i
-                        ),
-                    }).then((res) => {
-                        console.log("同步文件夹完成 ", data.payload.folder);
-                    });
+                    await cos
+                        .getSyncMessage({
+                            files: data.payload.files.map(
+                                (i: string) => "result-fonts/" + i
+                            ),
+                        })
+                        .then((res) => {
+                            console.log("同步文件夹完成 ", data.payload.folder);
+                        });
                 }
                 // return cos.syncDir(data);
                 ctx.body = JSON.stringify({
@@ -66,7 +68,7 @@ export class PusherCore {
                 });
             });
         app.listen(this.config.port ?? 3001, () => {
-            console.log("服务器运行中");
+            console.log("服务器运行中", this.config.port ?? 3001);
         });
     }
 }
