@@ -19,9 +19,9 @@ export class RemoteFactory {
             .then((res) => res.json())
             .then((res) => console.log("加入订阅完成", res));
     };
-    static async getAllFiles(MINIO_HOST: string) {
+    static async getAllFiles(WEBHOOK_HOST: string) {
         return await axios
-            .get(MINIO_HOST + "/split", {
+            .get(WEBHOOK_HOST + "/split", {
                 params: {
                     limit: 999999,
                     offset: 0,
@@ -57,12 +57,12 @@ export class RemoteFactory {
         });
     }
     static createSyncAllFile = (
-        MINIO_HOST: () => string,
+        WEBHOOK_HOST: () => string,
         uploadSingleStream: UploadSingleStream,
         isExistedFolder: Function
     ): RemoteStorage["syncAllFiles"] => {
         return async () => {
-            const records = await RemoteFactory.getAllFiles(MINIO_HOST());
+            const records = await RemoteFactory.getAllFiles(WEBHOOK_HOST());
 
             for (const item of records) {
                 const isExisted = await isExistedFolder(item.folder);

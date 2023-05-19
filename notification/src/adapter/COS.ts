@@ -51,12 +51,12 @@ export class COSAdapter extends COS implements RemoteStorage {
 
     subscribeWebHook = RemoteFactory.subscribeWebHook;
     syncAllFiles = RemoteFactory.createSyncAllFile(
-        () => this.config.MINIO_HOST,
-        this.uploadSingleStream,
-        this.isExistedFolder
+        () => this.config.WEBHOOK_HOST,
+        this.uploadSingleStream.bind(this),
+        this.isExistedFolder.bind(this)
     );
     getSyncMessage = RemoteFactory.createSyncMessageCallback(
-        this.uploadSingleStream
+        this.uploadSingleStream.bind(this)
     );
     /** 判断远程是否存在 */
     async isExistedFolder(folder: string) {
