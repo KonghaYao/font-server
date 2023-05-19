@@ -1,18 +1,25 @@
 import COS from "cos-nodejs-sdk-v5";
 import axios from "axios";
-import { getSelfIPs } from "./utils/getSelfIPs.js";
 import pLimit from "p-limit";
+import { RemoteStorage, RemoteStorageDefault } from "../RemoteStorage";
 interface COSConfig {
     Bucket: string;
     Region: string;
+    WEBHOOK_HOST: string;
+    MINIO_HOST: string;
 }
 
-export class COSAdapter extends COS {
+export class COSAdapter extends COS implements RemoteStorage {
     constructor(opt: COS.COSOptions, public config: COSConfig) {
         super({ ...opt, ...config });
     }
+    async getSyncMessage(payload: { files: string[] }): Promise<void> {
+        await this.syncDir({
+            files: payload.files.map((i: string) => "result-fonts/" + i),
+        });
+        return;
+    }
 
-    /** 1. 初始化远程服务器 */
     async init() {
         const isExisted = await this.checkBucket();
         if (!isExisted) {
@@ -48,26 +55,12 @@ export class COSAdapter extends COS {
             this.putBucket(config, (err, data) => (err ? rej(err) : res(data)));
         });
     }
-    /** 2. 订阅 IP 地址 */
-    async subscribeWebHook() {
-        const ipAddresses = getSelfIPs();
 
-        console.log(`本机 IP 地址：${ipAddresses.join(", ")}`);
-        return fetch(process.env.WEBHOOK_HOST + "/webhook", {
-            method: "POST",
-            body: JSON.stringify({
-                url:
-                    "http://" + ipAddresses[0] + ":" + process.env.PORT ?? "80",
-            }),
-            headers: { "content-type": "application/json" },
-        })
-            .then((res) => res.json())
-            .then((res) => console.log(res));
-    }
+    subscribeWebHook = RemoteStorageDefault.subscribeWebHook;
     /** 3. 同步内部对象存储到远程 */
     async syncAllFiles() {
         const records = await axios
-            .get(process.env.WEBHOOK_HOST + "/split", {
+            .get(this.config.WEBHOOK_HOST + "/split", {
                 params: {
                     limit: 999999,
                     offset: 0,
@@ -105,6 +98,7 @@ export class COSAdapter extends COS {
         }
         return Promise.all(list);
     }
+
     async isExistedFolder(folder: string) {
         return new Promise<boolean>((res, rej) => {
             this.headObject(
@@ -129,7 +123,7 @@ export class COSAdapter extends COS {
     async syncWithBucket(path: string) {
         const response = await axios({
             responseType: "stream",
-            url: process.env.MINIO_HOST + "/" + path,
+            url: this.config.MINIO_HOST + "/" + path,
         }).then((res) => {
             /** @ts-ignore */
             const length = res.headers.get("content-length") as string;
@@ -154,8 +148,6 @@ export class COSAdapter extends COS {
             );
         });
     }
-
-    /** 4. 监听事件 */
 
     changeCORS() {
         return this.putBucketCors({

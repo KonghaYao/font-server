@@ -241,7 +241,7 @@
     "_id": "8cfe35d9-f38f-4b09-a219-1bd96ff431a3",
     "colId": "de7c547d-96ff-4e03-8097-e34cd052374e",
     "containerId": "",
-    "name": "查询单个订阅及其日志 Copy",
+    "name": "查询订阅目录",
     "url": "{{host}}/webhook/?offset=0&limit=20&q=170",
     "method": "GET",
     "sortNum": 50000,
