@@ -57,6 +57,7 @@ FontsRouter.post("/fonts", webhook(), async (ctx) => {
     const source = FontSource.create({
         path: source_path,
         md5: file.hash!,
+        size: file.size,
         versions: [] as FontSplit[],
         name: ctx.request?.body?.name ?? path.basename(file.originalFilename!),
     });
