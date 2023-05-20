@@ -61,8 +61,10 @@ export class PusherCore {
                         .then((res) => {
                             console.log("同步文件夹完成 ", data.payload.folder);
                         });
+                } else {
+                    console.log("收到订阅", ctx.request.body);
                 }
-                // return cos.syncDir(data);
+
                 ctx.body = JSON.stringify({
                     success: "成功收到",
                 });

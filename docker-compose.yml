@@ -1,5 +1,20 @@
 version: "3"
 services:
+    pusher:
+        depends_on:
+            - api
+        build: ./notification
+        environment:
+            - SecretId=${SecretId}
+            - SecretKey=${SecretKey}
+            - Bucket=${Bucket}
+            - Region=${Region}
+
+            - SELF_HOST=pusher
+            - WEBHOOK_HOST=http://api:3000
+            - HOOK_TOKEN=api_admin_66618273
+            - MINIO_HOST=http://minio:9000
+            - PORT=3001
     api:
         depends_on:
             - minio
@@ -20,28 +35,44 @@ services:
 
         ports:
             - "3000:3000"
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "curl",
+                    "-f",
+                    "http://127.0.0.1:3000",
+                    "||",
+                    "exit",
+                    "1",
+                ]
+            interval: 20s
+            timeout: 10s
+            retries: 3
+
     db:
         image: postgres:14.1-alpine
         restart: always
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
-        ports:
-            - "5432:5432"
+        expose:
+            - 5432
         volumes:
             - ./data/db:/var/lib/postgresql/data
         # postgres 数据库需要等待端口启动，才不会导致其它程序 bug
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U postgres"]
-            interval: 5s
-            timeout: 5s
+            interval: 10s
+            timeout: 10s
             retries: 5
     minio:
         image: minio/minio:RELEASE.2023-05-04T21-44-30Z
         command: server --console-address ":9001" /data
         restart: always
+        expose:
+            - 9000
         ports:
-            - "9000:9000"
             - "9001:9001"
         environment:
             - MINIO_ROOT_USER=minioadmin

@@ -4,7 +4,9 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "test": "dotenv node ./test/index.js",
+        "test": "dotenv node ./test/index.mjs",
+        "build": "tsc",
+        "deploy": "node ./test/index.mjs",
         "prepublish": "tsc"
     },
     "type": "module",

@@ -3,18 +3,25 @@ import { getSelfIPs } from "./utils/getSelfIPs.js";
 import pLimit from "p-limit";
 import { RemoteStorage, UploadSingleStream } from "./RemoteStorage.js";
 
+const AuthHeader = { Authorization: "Bearer " + process.env.HOOK_TOKEN };
+
 export class RemoteFactory {
     static subscribeWebHook: RemoteStorage["subscribeWebHook"] = async () => {
-        const ipAddresses = getSelfIPs();
+        const ipAddresses = process.env.SELF_HOST
+            ? [process.env.SELF_HOST]
+            : getSelfIPs();
 
         console.log(`本机 IP 地址：${ipAddresses.join(", ")}`);
         return fetch(process.env.WEBHOOK_HOST + "/webhook", {
             method: "POST",
             body: JSON.stringify({
                 url:
-                    "http://" + ipAddresses[0] + ":" + process.env.PORT ?? "80",
+                    "http://" +
+                    ipAddresses[0] +
+                    ":" +
+                    (process.env.PORT ?? "80"),
             }),
-            headers: { "content-type": "application/json" },
+            headers: { ...AuthHeader, "content-type": "application/json" },
         })
             .then((res) => res.json())
             .then((res) => console.log("加入订阅完成", res));
@@ -22,6 +29,7 @@ export class RemoteFactory {
     static async getAllFiles(WEBHOOK_HOST: string) {
         return await axios
             .get(WEBHOOK_HOST + "/split", {
+                headers: AuthHeader,
                 params: {
                     limit: 999999,
                     offset: 0,

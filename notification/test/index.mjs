@@ -1,4 +1,4 @@
-import { COSAdapter } from "./dist/adapter/COS.js";
+import { COSAdapter } from "../dist/adapter/COS.js";
 import { PusherCore } from "../dist/core.js";
 
 const core = new PusherCore(
