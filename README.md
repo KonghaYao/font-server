@@ -1,6 +1,6 @@
 # font-server 中文字体切割服务器
 
-| author: 江夏尧 | developing | v0.5 | 2023/5/17
+| author: 江夏尧 | developing | v0.7 | 2023/5/20
 
 ## 软件定位
 
@@ -26,6 +26,7 @@ font-server 为内网使用的 **字体存储、管理服务**，通过 WebHook 
     1. 采用 Nodejs Typescript Koa 框架构建 Restful API 提供给内网管理服务器使用。
     2. 字体切割服务需要占用大量 CPU 资源，需要单独容器进行管理。但暂时采用同一个服务器进行服务。
     3. 通过 WebHook 事件通知外部更新。
+    4. 通过 access_token 简单划分权限，使得可以对外公开部分接口
 
 2. PostgreSQL 数据库：
 
@@ -45,15 +46,13 @@ font-server 为内网使用的 **字体存储、管理服务**，通过 WebHook 
     2. 通过请求添加外部服务器的 url 到事件监听表中。
     3. 当系统内部触发事件时，向监听的 url 发送事件数据。
 
-### 适配层
+### Pusher 适配层
 
-> 出于项目系统独立性考虑，适配层需要兼顾具体应用程序环境，与项目系统进行沟通。
+> 出于项目系统独立性考虑，Pusher 适配层需要兼顾具体应用程序环境，与项目系统进行沟通。
 
 1. 管理服务器
 
     1. 订阅项目事件，同步打包完成文件到云存储中。
-    2. 提供字体成品列表查询服务
-    3. 提供页面渲染（可选）
 
 2. 云存储与 CDN
 
@@ -84,6 +83,3 @@ sudo sh scripts/init.sh # 需要 linux 环境 curl unzip
 ```sh
 sudo HOST=http://localhost:3000 sh scripts/injectFonts.sh
 ```
-
-3. VSCode 安装 Thunder Client
-4. VSCode 设置中打上 Thunder Client 的 save to workspace 勾，然后重启就可以看到我之前的请求测试
