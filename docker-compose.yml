@@ -12,6 +12,8 @@ services:
             - MINIO_POINT=minio
             - MINIO_ROOT_USER=minioadmin
             - MINIO_ROOT_PASSWORD=minioadmin
+            - ADMIN_TOKEN=api_admin_66618273
+            - READABLE_TOKEN=api_readable_4173
         ports:
             - "3000:3000"
     db:

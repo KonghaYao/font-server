@@ -6,6 +6,7 @@ import { FontsRouter } from "./routers/fonts.js";
 import { SplitRouter } from "./routers/split.js";
 
 import { WebHookRouter } from "./routers/webhook.js";
+import { AccessControl } from "./access_control.js";
 const app = new Koa();
 const router = new Router();
 
@@ -28,7 +29,7 @@ app.use(
     }
 )
     .use(logger())
-
+    .use(AccessControl.protect())
     .use(
         koaBody({
             json: true,

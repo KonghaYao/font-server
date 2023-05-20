@@ -3,10 +3,11 @@ import { WebHookRepo } from "../db/db.js";
 import { webhook } from "../middleware/webhook.js";
 import { WebHook, WebHookEvent, WebHookLog } from "../db/entity/webhook.js";
 import { Like } from "typeorm";
+import { AccessControl } from "../access_control.js";
 const WebHookRouter = new Router();
 
 /** 获取订阅事件列表 */
-WebHookRouter.get("/webhook", async (ctx) => {
+WebHookRouter.get("/webhook", AccessControl.check("admin"), async (ctx) => {
     const { limit, offset, q } = ctx.query;
     const res = await WebHook.find({
         skip: parseInt(offset as string),
@@ -24,7 +25,7 @@ WebHookRouter.get("/webhook", async (ctx) => {
 });
 
 /** 查询单个订阅 */
-WebHookRouter.get("/webhook/:id", async (ctx) => {
+WebHookRouter.get("/webhook/:id", AccessControl.check("admin"), async (ctx) => {
     const { id } = ctx.params;
     const { logs, limit, offset, self } = ctx.query;
     const res = await WebHook.findOne({
@@ -46,7 +47,7 @@ WebHookRouter.get("/webhook/:id", async (ctx) => {
 });
 
 /** 添加一个事件订阅 */
-WebHookRouter.post("/webhook", async (ctx) => {
+WebHookRouter.post("/webhook", AccessControl.check("admin"), async (ctx) => {
     const url = ctx.request.body.url;
     if (url) {
         ctx.body = JSON.stringify(
@@ -59,27 +60,36 @@ WebHookRouter.post("/webhook", async (ctx) => {
     }
 });
 /** 删除一个事件订阅 */
-WebHookRouter.delete("/webhook/:id", async (ctx) => {
-    const { id } = ctx.params;
-    const item = await WebHookRepo.findOneBy({ id: parseInt(id) });
-    if (item) {
-        const logs = await WebHookLog.createQueryBuilder()
-            .where('"sourceId" = :id', { id: item.id })
-            .getMany();
-        await WebHookLog.remove(logs);
-        ctx.body = JSON.stringify(await WebHookRepo.remove([item]));
-    } else {
-        ctx.body = JSON.stringify({ error: `没有发现 id 为${id}` });
+WebHookRouter.delete(
+    "/webhook/:id",
+    AccessControl.check("admin"),
+    async (ctx) => {
+        const { id } = ctx.params;
+        const item = await WebHookRepo.findOneBy({ id: parseInt(id) });
+        if (item) {
+            const logs = await WebHookLog.createQueryBuilder()
+                .where('"sourceId" = :id', { id: item.id })
+                .getMany();
+            await WebHookLog.remove(logs);
+            ctx.body = JSON.stringify(await WebHookRepo.remove([item]));
+        } else {
+            ctx.body = JSON.stringify({ error: `没有发现 id 为${id}` });
+        }
     }
-});
+);
 /** 测试订阅事件 */
-WebHookRouter.patch("/webhook", webhook(), async (ctx) => {
-    const hookMessage = {
-        event: WebHookEvent.NULL,
-        payload: { test: 120392039 },
-    };
-    ctx.response.webhook = hookMessage;
-    ctx.body = JSON.stringify(hookMessage);
-});
+WebHookRouter.patch(
+    "/webhook",
+    AccessControl.check("admin"),
+    webhook(),
+    async (ctx) => {
+        const hookMessage = {
+            event: WebHookEvent.NULL,
+            payload: { test: 120392039 },
+        };
+        ctx.response.webhook = hookMessage;
+        ctx.body = JSON.stringify(hookMessage);
+    }
+);
 
 export { WebHookRouter };

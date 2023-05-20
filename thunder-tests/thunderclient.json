@@ -126,12 +126,17 @@
     "colId": "c9b62013-2e58-4454-b756-fad88bc5f6d9",
     "containerId": "",
     "name": "用户字体列表",
-    "url": "{{host}}/fonts?limit=5&offset=0&q",
+    "url": "{{host}}/fonts?limit=5&offset=0",
     "method": "GET",
     "sortNum": 10000,
     "created": "2023-05-16T00:03:10.410Z",
-    "modified": "2023-05-16T11:43:07.064Z",
-    "headers": [],
+    "modified": "2023-05-20T00:49:40.384Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Bearer api_admin_66618273"
+      }
+    ],
     "params": [
       {
         "name": "limit",
@@ -146,6 +151,7 @@
       {
         "name": "q",
         "value": "",
+        "isDisabled": true,
         "isPath": false
       },
       {
