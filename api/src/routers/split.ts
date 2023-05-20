@@ -64,7 +64,9 @@ SplitRouter.post(
                 targetType: "woff2",
                 chunkSize: 70 * 1024,
                 testHTML: false,
-                previewImage: {},
+                previewImage: {
+                    text: process.env.PREVIEW_TEXT,
+                },
                 log(...args: any[]) {
                     stream.send(args);
                 },

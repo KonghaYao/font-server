@@ -27,6 +27,7 @@ services:
             - CORS_ORIGIN=*
 
             - DB_HOST=db
+            - PREVIEW_TEXT="中文网字计划\nAaBbCc"
             - DB_USERNAME=postgres
             - DB_PASSWORD=postgres
             - MINIO_POINT=minio
