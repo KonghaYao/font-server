@@ -12,6 +12,9 @@ const app = new Koa();
 const router = new Router();
 
 router
+    .get("/", (ctx) => {
+        ctx.body = "欢迎使用 Font Server 提供的服务";
+    })
     .use(FontsRouter.routes())
     .use(SplitRouter.routes())
     .use(WebHookRouter.routes());
