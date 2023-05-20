@@ -7,6 +7,7 @@ import { SplitRouter } from "./routers/split.js";
 
 import { WebHookRouter } from "./routers/webhook.js";
 import { AccessControl } from "./access_control.js";
+import cors from "@koa/cors";
 const app = new Koa();
 const router = new Router();
 
@@ -29,6 +30,11 @@ app.use(
     }
 )
     .use(logger())
+    .use(
+        cors({
+            origin: process.env.CORS_ORIGIN ?? "*",
+        })
+    )
     .use(AccessControl.protect())
     .use(
         koaBody({

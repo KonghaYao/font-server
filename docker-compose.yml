@@ -6,14 +6,18 @@ services:
             - db
         build: ./api
         environment:
+            # 以下的两个token涉及到内部的访问权限 admin 拥有管理权限，而 readable 只有读取的部分权限
+            - ADMIN_TOKEN=api_admin_66618273
+            - READABLE_TOKEN=api_readable_4173
+            - CORS_ORIGIN=*
+
             - DB_HOST=db
             - DB_USERNAME=postgres
             - DB_PASSWORD=postgres
             - MINIO_POINT=minio
             - MINIO_ROOT_USER=minioadmin
             - MINIO_ROOT_PASSWORD=minioadmin
-            - ADMIN_TOKEN=api_admin_66618273
-            - READABLE_TOKEN=api_readable_4173
+
         ports:
             - "3000:3000"
     db:

@@ -1,6 +1,5 @@
 import { Entity, Column, ManyToOne, OneToMany, Unique } from "typeorm";
 import { Record } from "./record.js";
-import { AppDataSource } from "../db.js";
 
 /** 字体原始文件存储 */
 @Entity()
