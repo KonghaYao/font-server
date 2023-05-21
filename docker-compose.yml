@@ -5,6 +5,8 @@ services:
             - api
         restart: always
         build: ./notification
+        expose:
+            - 3001
         environment:
             - SecretId=${SecretId}
             - SecretKey=${SecretKey}
