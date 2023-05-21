@@ -51,7 +51,7 @@ export const webhook = (): Middleware => {
                     })
                     .catch((e: Error) => {
                         log.message = e.toString();
-                        log.state = WebHookCBState.success;
+                        log.state = WebHookCBState.error;
                         return log.save();
                     });
             });
