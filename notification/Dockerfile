@@ -4,6 +4,4 @@ WORKDIR /app
 COPY . .
 RUN npm install
 RUN npm run build
-RUN npm install -g pm2
-CMD npm run deploy
-# CMD node dist/main.js
+# CMD 不进行使用，在 docker-compose 中定义开始文件

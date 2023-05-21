@@ -11,9 +11,11 @@ interface COSConfig {
 export class COSAdapter extends COS implements RemoteStorage {
     constructor(opt: COS.COSOptions, public config: COSConfig) {
         super({ ...opt, ...config });
+        console.log(config);
     }
 
     async init() {
+        console.log("检测桶存在");
         const isExisted = await this.checkBucket();
         if (!isExisted) {
             await this.createBucket({

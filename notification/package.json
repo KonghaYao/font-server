@@ -4,10 +4,8 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "test": "dotenv node ./test/index.mjs",
-        "build": "tsc",
-        "deploy": "node ./test/index.mjs",
-        "prepublish": "tsc"
+        "test": "dotenv node ./test/cos.mjs",
+        "build": "tsc"
     },
     "type": "module",
     "author": "",
@@ -21,6 +19,7 @@
     },
     "devDependencies": {
         "@types/node": "^20.1.7",
+        "@types/p-limit": "^2.2.0",
         "typescript": "^5.0.4"
     }
 }

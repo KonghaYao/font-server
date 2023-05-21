@@ -64,10 +64,16 @@ font-server 为内网使用的 **字体存储、管理服务**，通过 WebHook 
 
 1. **clone 本仓库** OR **fork 它并打开 Github Workspace**
 
-2. 在根目录运行
+2. 添加一些环境变量
+
+> 这些环境变量需要看看 docker-compose.yml 缺少什么，一般都是 pusher 插件同步文件需要。
+>
+> 我会把环境变量写在 根目录的 .env 文件中，然后通过 docker-compose 使用
+
+3. 在根目录运行
 
 ```sh
-docker-compose up -d
+docker-compose --env-file=.env up -d
 ```
 
 ## 半自动测试
