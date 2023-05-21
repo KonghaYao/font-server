@@ -12,6 +12,7 @@ const app = new Koa();
 const router = new Router();
 
 router
+
     .use(FontsRouter.routes())
     .use(SplitRouter.routes())
     .use(WebHookRouter.routes());
@@ -30,10 +31,18 @@ app.use(
     }
 )
     .use(logger())
+
     .use(
         cors({
             origin: process.env.CORS_ORIGIN ?? "*",
         })
+    )
+    .use(
+        new Router()
+            .get("/", (ctx) => {
+                ctx.body = "欢迎使用 Font Server 提供的服务";
+            })
+            .routes()
     )
     .use(AccessControl.protect())
     .use(

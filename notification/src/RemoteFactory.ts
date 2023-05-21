@@ -11,7 +11,11 @@ export class RemoteFactory {
             ? [process.env.SELF_HOST]
             : getSelfIPs();
 
-        console.log(`本机 IP 地址：${ipAddresses.join(", ")}`);
+        console.log(
+            `本机 IP 地址：${ipAddresses.join(", ")}`,
+            "远程地址：",
+            process.env.WEBHOOK_HOST
+        );
         return fetch(process.env.WEBHOOK_HOST + "/webhook", {
             method: "POST",
             body: JSON.stringify({

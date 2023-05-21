@@ -3,6 +3,7 @@ services:
     pusher:
         depends_on:
             - api
+        restart: always
         build: ./notification
         environment:
             - SecretId=${SecretId}
@@ -20,6 +21,7 @@ services:
             - minio
             - db
         build: ./api
+        restart: always
         environment:
             # 以下的两个token涉及到内部的访问权限 admin 拥有管理权限，而 readable 只有读取的部分权限
             - ADMIN_TOKEN=api_admin_66618273
@@ -37,16 +39,7 @@ services:
         ports:
             - "3000:3000"
         healthcheck:
-            test:
-                [
-                    "CMD",
-                    "curl",
-                    "-f",
-                    "http://127.0.0.1:3000",
-                    "||",
-                    "exit",
-                    "1",
-                ]
+            test: node ./test/healthcheck.mjs || exit 1
             interval: 20s
             timeout: 10s
             retries: 3
