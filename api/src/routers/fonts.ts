@@ -38,7 +38,8 @@ FontsRouter.get(
     "/fonts/:id",
     AccessControl.check("reader", "admin"),
     async (ctx) => {
-        const { id, versions } = ctx.params;
+        const { versions } = ctx.request.query;
+        const { id } = ctx.params;
         let query = await FontSourceRepo.findOne({
             where: {
                 id: parseInt(id as string),
