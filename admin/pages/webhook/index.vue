@@ -6,6 +6,10 @@
                     <span class="text-large font-600 mr-3"> WebHook 管理 </span>
                 </template>
             </el-page-header>
+
+        </el-row>
+        <el-row>
+            <el-alert title="WebHook 订阅者会接收到系统打包完成信息，然后进行个性化操作" type="success" effect="dark" />
         </el-row>
         <el-row>
             <el-table :data="Result.data.value || []" style="width: 100%">

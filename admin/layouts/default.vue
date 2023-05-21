@@ -1,6 +1,6 @@
 <template>
     <el-container class="container">
-        <el-header>Header</el-header>
+
         <el-container>
             <el-aside width="200px">
                 <el-menu class="container" router>
