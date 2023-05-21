@@ -8,7 +8,7 @@
             </el-page-header>
         </el-row>
         <el-row>
-            <el-alert title="这些是用户上传的原始字体" type="success" effect="dark" />
+            <el-alert title="这些是用户上传的原始字体, 在系统的 /user-fonts 文件夹下" type="success" effect="dark" />
         </el-row>
         <el-row>
             <el-table :data="Result.data.value || []" style="width: 100%">
@@ -43,11 +43,9 @@
                     <template #default="scope">
                         <el-button size="small" type="primary" @click="handleDetail(scope.$index, scope.row)">📃
                             打包记录</el-button>
-                        <el-button size="small" type="primary"
+                        <el-button size="small" type="warning"
                             @click="navigateTo(`/user-font/building?md5=${scope.row.md5}&id=${scope.row.id}&name=${scope.row.name}`)">📦
                             打包此文件</el-button>
-                        <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">🗑️
-                            删除</el-button> -->
                     </template>
                 </el-table-column>
             </el-table>

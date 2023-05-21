@@ -8,7 +8,7 @@
             </el-page-header>
         </el-row>
         <el-row>
-            <el-alert title="这是全部字体文件的打包记录" type="success" effect="dark" />
+            <el-alert title="这是全部字体文件的打包记录，打包之后的文件在 /result-fonts 目录中" type="success" effect="dark" />
         </el-row>
         <el-row>
             <el-table :data="Result.data.value || []" style="width: 100%">

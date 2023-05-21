@@ -5,13 +5,15 @@
             <el-aside width="200px">
                 <el-menu class="container" router>
 
-                    <el-menu-item index="/">🎛️ 管理面板
+                    <el-menu-item index="/">🎛️ 主页
                     </el-menu-item>
                     <el-menu-item index="/user-font">📁 字体管理
                     </el-menu-item>
                     <el-menu-item index="/result-font">📦 打包管理
                     </el-menu-item>
                     <el-menu-item index="/webhook">🤖 WebHook
+                    </el-menu-item>
+                    <el-menu-item index="/minio">📝 文件系统
                     </el-menu-item>
                 </el-menu>
             </el-aside>
