@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    height: 100%;
+}
+html {
+    height: 100%;
+}
+#__nuxt {
+    height: 100%;
+}
+
+.el-row {
+    margin-bottom: 20px;
+}
