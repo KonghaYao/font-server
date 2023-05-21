@@ -18,6 +18,7 @@ services:
             - HOOK_TOKEN=api_admin_66618273
             - MINIO_HOST=http://minio:9000
             - PORT=3001
+
     api:
         depends_on:
             - minio
@@ -41,7 +42,7 @@ services:
         ports:
             - "3000:3000"
         healthcheck:
-            test: node ./test/healthcheck.mjs || exit 1
+            test: curl -f http://localhost:3000 || exit 1
             interval: 20s
             timeout: 10s
             retries: 3
