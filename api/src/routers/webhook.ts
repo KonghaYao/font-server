@@ -41,6 +41,7 @@ WebHookRouter.get("/webhook/:id", AccessControl.check("admin"), async (ctx) => {
                   .where('"sourceId" = :id', { id: res!.id })
                   .skip(parseInt(offset as string))
                   .take(parseInt(limit as string))
+                  .orderBy("id", "DESC")
                   .getMany()
             : null,
     });

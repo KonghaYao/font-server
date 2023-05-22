@@ -28,7 +28,7 @@ const route = useRoute()
 
 ElMessageBox({
     title: "是否打包 " + route.query.name ?? route.query.id + "?"
-    , message: "✅ 打包过程大概30秒，请勿关闭页面"
+    , message: "✅ 打包过程大概30秒，请勿关闭页面，点击确认开始打包，可以取消"
 }).then(() => {
     TerminalApi.pushMessage('my-terminal', '发送打包事件中。。。')
     const fd = new FormData()
@@ -43,14 +43,14 @@ ElMessageBox({
         write(text) {
 
             //  调用API
-            TerminalApi.pushMessage('my-terminal', JSON.parse(text).map((i: string) => ({ content: i })))
+            TerminalApi.pushMessage('my-terminal', text + '\n')
         }, close() {
-            console.log('传输完毕')
+            TerminalApi.pushMessage('my-terminal', '程序执行完毕，可以退出窗口了\n')
         }
 
     })))
-}).catch(() => {
-    navigateTo('/user-font')
+}).catch((e) => {
+    ElMessage({ type: "error", message: e.message })
 })
 
 

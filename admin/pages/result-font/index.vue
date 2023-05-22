@@ -24,7 +24,7 @@
                 <el-table-column label="文件数目" prop="">
                     <template #default="scope">
                         <div style="display: flex; align-items: center">
-                            {{ scope.row.files.length }}
+                            {{ scope.row.files?.length || 0 }}
                         </div>
                     </template>
                 </el-table-column>
