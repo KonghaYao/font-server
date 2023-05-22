@@ -109,3 +109,62 @@ sudo sh scripts/init.sh # 需要 linux 环境 curl unzip
 ```sh
 sudo HOST=http://localhost:3000 sh scripts/injectFonts.sh
 ```
+
+## 简单的几个接口
+
+1. 获取切割完成的可用字体
+
+```js
+const root = ""; // 这里写 api 容器暴露的端口
+const token = "api_admin_66618273"; // 这里写你的 admin token，默认是这个 token
+const cdnRoot = '' // CDN 所在的 Root
+
+// 请求这个 URL 可以获取到一个文件列表
+fetch(root+"/split?limit=5&offset=0&state=2", {
+  headers: {
+    "Authorization", "Bearer "+token
+  }
+})
+  .then(response => response.json())
+
+  .then(res=>{
+    // 我们来获取一下每个字体可以使用的 css 文件
+    return res.map(i=>{
+        return `${cdnRoot}/result-fonts/${i.folder}/result.css`
+    })
+  })
+```
+
+返回数据大致如下
+
+```jsonc
+[
+    {
+        "id": 15,
+        "created_at": "2023-05-22T02:14:41.706Z",
+        "updated_at": "2023-05-22T02:15:02.543Z",
+
+        // 原始字体资源的信息
+        "source": {
+            "id": 10,
+            "created_at": "2023-05-22T01:46:07.586Z",
+            "updated_at": "2023-05-22T01:46:07.586Z",
+            "path": "user-fonts/e28bdfa317ad66266bceb7f27fb6dde7.woff2",
+            "name": "得意黑-woff2",
+            "size": 950116,
+            "md5": "e28bdfa317ad66266bceb7f27fb6dde7"
+        },
+        // 成品字体所在的文件夹
+        "folder": "e28bdfa317ad66266bceb7f27fb6dde7/15",
+
+        // 成品的文件列表
+        "files": [
+            "e28bdfa317ad66266bceb7f27fb6dde7/15/1c8e99fa9ef7c6c698d48417c2fe8765.woff2",
+            "e28bdfa317ad66266bceb7f27fb6dde7/15/preview.png",
+            "e28bdfa317ad66266bceb7f27fb6dde7/15/reporter.json",
+            "e28bdfa317ad66266bceb7f27fb6dde7/15/result.css" // 最为重要的文件
+        ],
+        "state": 2
+    }
+]
+```
