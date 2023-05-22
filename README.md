@@ -1,6 +1,6 @@
 # font-server 中文字体切割服务器
 
-| author: 江夏尧 | developing | v0.7 | 2023/5/20
+| author: 江夏尧 | developing | v0.8 | 2023/5/22
 
 ## 软件定位
 
@@ -9,11 +9,11 @@ font-server 是一个用于内网的字体存储和管理服务，支持通过 W
 主要功能包括：
 
 1. ✅ 用户可以上传原始字体文件，系统会保存这些字体文件。
-2. ✅ 触发切割功能后，切割服务器会自动获取内部存储的字体文件，并对其进行切割，然后将切割后的字体片段存入内部文件系统。
+2. ✅ 触发打包字体功能后，切割服务器会自动获取内部存储的字体文件，并对其进行切割，然后将切割后的字体片段存入内部文件系统。
 3. ✅ 支持 WebHook 订阅功能，触发 hook 事件后，系统会广播订阅 url，通知外部程序相关事件信息。
 4. ✅ 在切割完成后，外部监听程序可以获取内部的切割分片，并将其部署到外部公开的 OSS 系统上。特别地，内外 OSS 系统应该使用相同的路径。
 5. ✅ 用户可以通过 OSS 系统提供的 CDN 加速访问字体文件，同时嵌入字体加载 HTML 片段，浏览器会自动加载相应的 CSS 文件和字体文件。
-6. ✅ 提供简单的 Admin 界面，方便用户进行可视化操作。
+6. ✅ 提供简单的 Admin 界面，方便用户进行可视化操作。[Admin 地址](https://font-server.netlify.app)
 
 ## 软件设计
 
@@ -84,11 +84,13 @@ font-server 是一个用于内网的字体存储和管理服务，支持通过 W
 
 1. **clone 本仓库** OR **fork 它并打开 Github Workspace**
 
-2. 添加一些环境变量
+2. 添加一些环境变量修改一下 docker-compose-yml
 
 > 这些环境变量需要看看 docker-compose.yml 缺少什么，一般都是 Pusher 插件同步文件需要。
 >
 > 我会把环境变量写在 根目录的 .env 文件中，然后通过 docker-compose 使用
+>
+> docker-compose.yml 中有些用户名密码之类的可以进行修改，保证私密性
 
 3. 在根目录运行
 
@@ -109,6 +111,12 @@ sudo sh scripts/init.sh # 需要 linux 环境 curl unzip
 ```sh
 sudo HOST=http://localhost:3000 sh scripts/injectFonts.sh
 ```
+
+# 接口文档
+
+[Postman 文档](https://www.postman.com/konghayao/workspace/font-server/collection/18433126-4b25b13a-6c0e-40a4-9dec-ccf655d1660c?action=share&creator=18433126)
+
+注意设置好你的接口环境哦
 
 ## 简单的几个接口
 
