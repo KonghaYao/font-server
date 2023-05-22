@@ -35,7 +35,7 @@ SplitRouter.post(
                 state: SplitEnum.idle,
                 folder: "",
             });
-            await FontSplitRepo.save(newFontSplit);
+            await newFontSplit.save();
 
             const tempFilePath = createTempPath(item.path);
             const destFilePath = createTempPath(
@@ -53,10 +53,9 @@ SplitRouter.post(
                 path.basename(item.path),
                 tempFilePath
             );
-            await FontSplitRepo.save({
-                id: newFontSplit.id,
-                state: SplitEnum.cutting,
-            });
+
+            newFontSplit.state = SplitEnum.cutting;
+            await newFontSplit.save();
 
             stream.send(["开始打包"]);
             await fontSplit({
@@ -86,12 +85,10 @@ SplitRouter.post(
             );
             stream.send(["存储 MINIO 完成"]);
 
-            await FontSplitRepo.save({
-                id: newFontSplit.id,
-                folder,
-                files: paths,
-                state: SplitEnum.success,
-            });
+            newFontSplit.folder = folder;
+            newFontSplit.files = paths;
+            newFontSplit.state = SplitEnum.success;
+            await newFontSplit.save();
 
             stream.sendEnd(newFontSplit);
 

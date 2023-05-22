@@ -49,6 +49,7 @@ export class PusherCore {
             )
             .use(async (ctx) => {
                 const data = ctx.request.body;
+                console.log("收到订阅", ctx.request.body);
                 if (data.event === 1) {
                     console.log("同步文件夹 ", data.payload.folder);
                     // console.log(data.payload);
@@ -61,8 +62,6 @@ export class PusherCore {
                         .then((res) => {
                             console.log("同步文件夹完成 ", data.payload.folder);
                         });
-                } else {
-                    console.log("收到订阅", ctx.request.body);
                 }
 
                 ctx.body = JSON.stringify({
