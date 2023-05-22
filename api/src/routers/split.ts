@@ -53,7 +53,7 @@ SplitRouter.post(
                 path.basename(item.path),
                 tempFilePath
             );
-            await FontSourceRepo.save({
+            await FontSplitRepo.save({
                 id: newFontSplit.id,
                 state: SplitEnum.cutting,
             });
