@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import Auth from "./Auth";
-import { expect } from "chai";
+import { expect, test } from "bun:test";
 const app = new Elysia()
     .use(
         Auth({
@@ -11,7 +11,7 @@ const app = new Elysia()
     )
     .get("/", () => "test failed");
 
-Deno.test("无 bearer 测试", async () => {
+test("无 bearer 测试", async () => {
     const res = await app
         .handle(
             new Request("http://localhost/", {
@@ -21,10 +21,10 @@ Deno.test("无 bearer 测试", async () => {
         .catch((e) => {
             return e;
         });
-    expect(res.status).eql(403);
+    expect(res.status).toBe(403);
 });
 
-Deno.test("错误 token 测试", async () => {
+test("错误 token 测试", async () => {
     expect(
         (
             await app
@@ -39,10 +39,10 @@ Deno.test("错误 token 测试", async () => {
                     return e;
                 })
         ).status
-    ).eql(403);
+    ).toBe(403);
 });
 
-Deno.test("正确 token 测试", async () => {
+test("正确 token 测试", async () => {
     expect(
         (
             await app
@@ -57,5 +57,5 @@ Deno.test("正确 token 测试", async () => {
                     return e;
                 })
         ).status
-    ).eql(200);
+    ).toBe(200);
 });

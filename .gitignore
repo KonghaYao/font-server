@@ -52,3 +52,4 @@ wp-config.php
 #/wp-content/themes
 deno.lock
 pnpm-lock.yaml
+bun.lockb
