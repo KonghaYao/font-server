@@ -2,12 +2,15 @@ import { Elysia } from "elysia";
 import { expect, test } from "bun:test";
 import FontServer from "./FontServer";
 import fs from "node:fs";
+import { createOSS } from "./OSS/S3OSS";
+import { PrismaAdapter } from "./Storage/Prisma";
+const oss = await createOSS();
+const storage = new PrismaAdapter();
 const app = new Elysia()
     .use(
         FontServer({
-            async outputFile(name, file) {
-                console.log(name);
-            },
+            oss,
+            storage,
         })
     )
     .get("/", () => "test failed");
