@@ -31,86 +31,112 @@ export default (config: {
         oss: OSS;
     }) =>
     (app: Elysia) =>
-        new Elysia().post(
-            "/split",
-            async (ctx) => {
-                const stream = new Stream();
-                const fileHash = ctx.headers["x-file-hash"];
-                const filename = ctx.headers["x-file-name"];
-                const fileBlob = new Uint8Array(ctx.body as ArrayBuffer);
-                stream.send(`文件存储开始 ${fileHash}`);
-                const fontId = await saveOriginFile(
-                    config,
-                    `/origin-font/${filename}`,
-                    fileBlob
-                );
-                stream.send("文件存储完毕");
-                let logs = "";
-                let files = "";
-                const { id: fontSplitGroupId } =
-                    await config.storage.createOrUpdateFontSplitRecord({
-                        fontId,
-                        startTime: new Date(),
-                        logs,
-                        files,
-                    });
-
-                stream.send("构建开始");
-
-                await fontSplit({
-                    ...config.fontSplitOverride,
-                    FontPath: new Uint8Array(ctx.body as ArrayBuffer),
-                    destFold: `/${fileHash}`,
-                    log(...args) {
-                        stream.send(args);
-                        logs += `${args.join(" ")}\n`;
-                        config.storage.createOrUpdateFontSplitRecord({
-                            id: fontSplitGroupId,
-                            logs,
-                        });
-                    },
-                    async outputFile(name, blob) {
-                        await config.oss.saveFile(
-                            `/${process.env.S3_FONT_PREFIX}/${name}`,
-                            Buffer.from(blob)
-                        );
-                        files += `/${process.env.S3_FONT_PREFIX}/${name},`;
-                    },
-                })
-                    .then(() => {
-                        config.storage.createOrUpdateFontSplitRecord({
-                            id: fontSplitGroupId,
-                            endTime: new Date(),
+        new Elysia()
+            .post(
+                "/split",
+                async (ctx) => {
+                    const stream = new Stream();
+                    const fileHash = ctx.headers["x-file-hash"];
+                    const filename = ctx.headers["x-file-name"];
+                    const fileBlob = new Uint8Array(ctx.body as ArrayBuffer);
+                    stream.send(`文件存储开始 ${fileHash}`);
+                    const fontId = await saveOriginFile(
+                        config,
+                        `/origin-font/${filename}`,
+                        fileBlob
+                    );
+                    stream.send("文件存储完毕");
+                    let logs = "";
+                    let files = "";
+                    const { id: fontSplitGroupId } =
+                        await config.storage.createOrUpdateFontSplitRecord({
+                            fontId,
+                            startTime: new Date(),
                             logs,
                             files,
                         });
-                        stream.send("构建完成");
-                        stream.close();
+
+                    stream.send("构建开始");
+
+                    await fontSplit({
+                        ...config.fontSplitOverride,
+                        FontPath: new Uint8Array(ctx.body as ArrayBuffer),
+                        destFold: `/${fileHash}`,
+                        log(...args) {
+                            stream.send(args);
+                            logs += `${args.join(" ")}\n`;
+                            config.storage.createOrUpdateFontSplitRecord({
+                                id: fontSplitGroupId,
+                                logs,
+                            });
+                        },
+                        async outputFile(name, blob) {
+                            await config.oss.saveFile(
+                                `/${process.env.S3_FONT_PREFIX}/${name}`,
+                                Buffer.from(blob)
+                            );
+                            files += `/${process.env.S3_FONT_PREFIX}/${name},`;
+                        },
                     })
-                    .catch((e: Error) => {
-                        logs += `${e.message}\n`;
-                        stream.send(e.message);
-                        config.storage.createOrUpdateFontSplitRecord({
-                            id: fontSplitGroupId,
-                            endTime: new Date(),
-                            logs,
-                            files,
-                            error: e.message,
+                        .then(() => {
+                            config.storage.createOrUpdateFontSplitRecord({
+                                id: fontSplitGroupId,
+                                endTime: new Date(),
+                                logs,
+                                files,
+                            });
+                            stream.send("构建完成");
+                            stream.close();
+                        })
+                        .catch((e: Error) => {
+                            logs += `${e.message}\n`;
+                            stream.send(e.message);
+                            config.storage.createOrUpdateFontSplitRecord({
+                                id: fontSplitGroupId,
+                                endTime: new Date(),
+                                logs,
+                                files,
+                                error: e.message,
+                            });
+
+                            stream.close();
                         });
 
-                        stream.close();
-                    });
-
-                return stream;
-            },
-            {
-                headers: t.Object({
-                    "content-type": t.String({
-                        examples: ["application/octet-stream"],
+                    return stream;
+                },
+                {
+                    headers: t.Object({
+                        "content-type": t.String({
+                            examples: ["application/octet-stream"],
+                        }),
+                        "x-file-hash": t.String(),
+                        "x-file-name": t.String(),
                     }),
-                    "x-file-hash": t.String(),
-                    "x-file-name": t.String(),
-                }),
-                body: t.Any(),
-            }
-        );
+                    body: t.Any(),
+                }
+            )
+            .get(
+                "/origin-fonts",
+                ({ query }) => {
+                    return config.storage.queryUploadedFont(query);
+                },
+                {
+                    query: t.Object({
+                        limit: t.Number(),
+
+                        page: t.Number(),
+                    }),
+                }
+            )
+            .get(
+                "/split-record",
+                ({ query }) => {
+                    return config.storage.queryFontSplitRecord(query);
+                },
+                {
+                    query: t.Object({
+                        limit: t.Number(),
+                        page: t.Number(),
+                    }),
+                }
+            );

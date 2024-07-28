@@ -38,7 +38,7 @@ graph LR;
         FileStorage -->| Easily Expandable | Cloudflare_R2
         PusherLayer -->| Easily Expandable | Webhook_Subscriptions
         PusherLayer -->| Easily Expandable | Email_Notifications
-        Database -->| Easily Expandable | PostgreSQL
-        Database -->| Easily Expandable | Cloudflare_D2
+        Database -->| Prisma | PostgreSQL
+        Database -->| Prisma | Cloudflare_D2
     end
 ```

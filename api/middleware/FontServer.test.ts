@@ -34,3 +34,23 @@ test("构建测试", async () => {
     expect(res.status).toBe(200);
     expect((await res.text()).length).toBeGreaterThan(100);
 });
+
+test("获取字体列表", async () => {
+    const res = await app.handle(
+        new Request("http://localhost/origin-fonts?limit=5&page=1", {
+            method: "GET",
+        })
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).data.length).toBeGreaterThan(0);
+});
+
+test("获取字体记录", async () => {
+    const res = await app.handle(
+        new Request("http://localhost/split-record?limit=5&page=1", {
+            method: "GET",
+        })
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).data.length).toBeGreaterThan(0);
+});
