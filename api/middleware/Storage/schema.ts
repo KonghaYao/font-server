@@ -10,6 +10,7 @@ export interface IFontSplitRecord {
     fontId: string;
     startTime: Date;
     logs: string;
+    files: string;
     endTime?: Date | null;
     error?: string | null;
 }
